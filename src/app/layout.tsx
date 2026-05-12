@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Syne, Inter, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import PostHogProvider from "@/components/PostHogProvider";
 import "./globals.css";
 
 const syne = Syne({
@@ -41,7 +44,13 @@ export default function RootLayout({
       lang="en"
       className={`${syne.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <PostHogProvider>
+          {children}
+        </PostHogProvider>
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

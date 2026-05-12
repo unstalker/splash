@@ -1,12 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
+import posthog from "posthog-js";
 import { useWaitlistCount, formatCount } from "@/lib/useWaitlistCount";
 
 export default function Hero() {
   const { count } = useWaitlistCount();
 
   const handleCTA = () => {
+    posthog.capture("hero_cta_clicked");
     document.querySelector("#waitlist")?.scrollIntoView({ behavior: "smooth" });
   };
 

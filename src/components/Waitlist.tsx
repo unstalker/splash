@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import posthog from "posthog-js";
 import { useWaitlistCount, formatCount } from "@/lib/useWaitlistCount";
 
 export default function Waitlist() {
@@ -25,6 +26,12 @@ export default function Waitlist() {
     setLoading(false);
 
     if (typeof data?.count === "number") setCount(data.count);
+
+    posthog.capture("waitlist_signup", {
+      duplicate: data?.duplicate ?? false,
+      position: data?.count,
+    });
+
     setSubmitted(true);
   };
 
