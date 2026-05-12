@@ -1,0 +1,340 @@
+@import "tailwindcss";
+
+:root {
+  --void: #08080f;
+  --deep: #0d0d1a;
+  --surface: #13132b;
+  --raised: #1e1e40;
+  --violet: #7c5cfc;
+  --violet-light: #a68ffd;
+  --violet-deep: #3b1fa8;
+  --violet-muted: #2d1f70;
+  --silver: #c8d0e0;
+  --smoke: #8b9ab4;
+  --muted: #6b6b8a;
+  --breach: #ff3c50;
+  --t100: rgba(200, 208, 224, 1);
+  --t55: rgba(200, 208, 224, 0.55);
+  --t35: rgba(200, 208, 224, 0.35);
+  --t20: rgba(200, 208, 224, 0.2);
+  --border: rgba(124, 92, 252, 0.18);
+  --border-sm: rgba(200, 208, 224, 0.07);
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+  --s-9: 64px;
+  --s-10: 80px;
+  --s-11: 100px;
+
+  --font-display: var(--font-syne);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--void);
+  color: var(--t55);
+  font-family: var(--font-body, system-ui), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Film grain — mandatory on every page */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display, system-ui), sans-serif;
+  color: var(--t100);
+}
+
+/* ─── Buttons ─────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 13px 26px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(180deg, #8c6cfc 0%, #7c5cfc 50%, #6a4deb 100%);
+  border: 1px solid rgba(166, 143, 253, 0.55);
+  color: #fff;
+  font-family: var(--font-body, system-ui), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
+  box-shadow:
+    0 0 24px rgba(124, 92, 252, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  filter: brightness(0.96);
+  transform: translateY(0);
+}
+
+.btn-primary.btn-sm {
+  padding: 8px 14px;
+  font-size: 12px;
+}
+
+.btn-primary.btn-lg {
+  padding: 16px 30px;
+  font-size: 15px;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 22px;
+  border-radius: var(--r-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--t35);
+  font-family: var(--font-body, system-ui), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+  text-decoration: none;
+}
+
+.btn-ghost:hover {
+  color: var(--t55);
+  border-color: var(--border-sm);
+}
+
+/* ─── Cards ───────────────────────────────────────────────── */
+.card {
+  background: var(--deep);
+  border: 1px solid var(--border-sm);
+  border-radius: var(--r-lg);
+  padding: 28px;
+}
+
+.card-violet {
+  background: rgba(124, 92, 252, 0.06);
+  border: 1px solid rgba(124, 92, 252, 0.2);
+  border-radius: var(--r-lg);
+  padding: 28px;
+}
+
+/* ─── Inputs ──────────────────────────────────────────────── */
+.input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border-sm);
+  border-radius: var(--r-md);
+  padding: 12px 16px;
+  font-family: var(--font-body, system-ui), sans-serif;
+  font-size: 14px;
+  color: var(--t55);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.input::placeholder {
+  color: var(--muted);
+}
+
+.input:focus {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.15);
+}
+
+/* ─── Section eyebrow (with violet rule) ─────────────────── */
+.eyebrow {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--violet-light);
+}
+
+.eyebrow::after {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--violet);
+  border-radius: 1px;
+}
+
+/* When eyebrow is left-aligned */
+.eyebrow-left {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--violet-light);
+}
+
+.eyebrow-left::after {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--violet);
+  border-radius: 1px;
+}
+
+/* ─── Logo ────────────────────────────────────────────────── */
+.logo-un {
+  color: var(--violet);
+}
+
+.logo-stalker {
+  background: linear-gradient(160deg, #f0f4fc 0%, #8b9ab4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Pulsing dot ─────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 92, 252, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(124, 92, 252, 0);
+  }
+}
+
+.pulse-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--violet-light);
+  animation: pulse-dot 2s ease infinite;
+  flex-shrink: 0;
+}
+
+/* ─── Smoke blobs ─────────────────────────────────────────── */
+@keyframes float-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30px, -20px) scale(1.05);
+  }
+}
+
+@keyframes float-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-25px, 15px) scale(0.97);
+  }
+}
+
+.smoke-a {
+  animation: float-a 12s ease-in-out infinite;
+}
+
+.smoke-b {
+  animation: float-b 16s ease-in-out infinite;
+}
+
+/* ─── Agent log ───────────────────────────────────────────── */
+.log-time {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.log-action {
+  color: var(--violet-light);
+  flex-shrink: 0;
+}
+
+.log-ok {
+  color: var(--smoke);
+}
+
+.log-alert {
+  color: var(--breach);
+}
+
+.log-neutral {
+  color: var(--t35);
+}
+
+/* ─── Hero grid overlay ───────────────────────────────────── */
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(124, 92, 252, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 92, 252, 0.035) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+/* ─── Section wrapper ─────────────────────────────────────── */
+.section-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 24px;
+}

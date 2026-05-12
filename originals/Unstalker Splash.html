@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[UN]STALKER — Privacy is a right. We're here to enforce it.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─────────────────────────────────────────
+       BRAND TOKENS — [UN]STALKER v1.0
+    ───────────────────────────────────────── */
+    :root {
+      --void:         #08080F;
+      --deep:         #0D0D1A;
+      --surface:      #13132B;
+      --raised:       #1E1E40;
+      --violet:       #7C5CFC;
+      --violet-light: #A68FFD;
+      --violet-deep:  #3B1FA8;
+      --violet-muted: #2D1F70;
+      --smoke:        #8B9AB4;
+      --silver:       #C8D0E0;
+      --breach:       #FF3C50;
+      --muted:        #6B6B8A;
+      --t100: rgba(200,208,224,1.00);
+      --t55:  rgba(200,208,224,0.55);
+      --t35:  rgba(200,208,224,0.35);
+      --t20:  rgba(200,208,224,0.20);
+      --border:    rgba(124,92,252,0.14);
+      --border-sm: rgba(200,208,224,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--void);
+      color: var(--t100);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Grain overlay */
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      pointer-events: none; z-index: 9000; opacity: 0.028;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ── LOGO ── */
+    .logo {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 17px; letter-spacing: -0.02em;
+      text-decoration: none; white-space: nowrap;
+      display: inline-flex; align-items: center;
+    }
+    .logo .vio { color: var(--violet); }
+    .logo .wrd { color: var(--t100); }
+
+    /* ── BUTTONS — flat, no shadows ── */
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--violet); color: #fff;
+      font-family: 'Inter', sans-serif; font-weight: 500;
+      font-size: 14px; letter-spacing: 0.02em;
+      padding: 13px 28px; border-radius: 6px;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: background 0.18s; white-space: nowrap;
+    }
+    .btn-primary:hover { background: var(--violet-light); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: transparent; color: var(--t35);
+      font-family: 'Inter', sans-serif; font-weight: 500;
+      font-size: 14px; letter-spacing: 0.02em;
+      padding: 12px 24px; border-radius: 6px;
+      border: 1px solid var(--border-sm); cursor: pointer;
+      text-decoration: none; transition: border-color 0.18s, color 0.18s;
+      white-space: nowrap;
+    }
+    .btn-ghost:hover { border-color: var(--violet-muted); color: var(--t100); }
+
+    /* ── EYEBROW ── */
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500; font-size: 11px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--violet-light); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .eyebrow::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--violet); }
+
+    /* ════════════════════════════════
+       NAV
+    ════════════════════════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 800;
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      background: rgba(8,8,15,0.9); backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-sm);
+    }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-family: 'Inter', sans-serif; font-weight: 500; font-size: 13px;
+      letter-spacing: 0.02em; color: var(--t35); text-decoration: none; transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--t100); }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .ham-line { width: 20px; height: 1.5px; background: var(--t55); border-radius: 1px; }
+
+    /* ════════════════════════════════
+       HERO
+    ════════════════════════════════ */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 110px 48px 80px;
+      position: relative; overflow: hidden; background: var(--void);
+    }
+    .hero-smoke {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 560px; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 0%,
+        rgba(124,92,252,0.26) 0%, rgba(59,31,168,0.12) 42%, transparent 70%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(124,92,252,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,92,252,0.045) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 72% 50% at 50% 8%, black 15%, transparent 100%);
+    }
+    .hero-inner { position: relative; z-index: 2; max-width: 860px; width: 100%; }
+
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(124,92,252,0.07); border: 1px solid rgba(124,92,252,0.2);
+      border-radius: 4px; padding: 6px 16px; margin-bottom: 44px;
+      animation: fu 0.6s ease both;
+    }
+    .h-pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--violet); animation: pg 2.4s ease-in-out infinite; }
+    .hero-pill span { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.07em; color: var(--violet-light); }
+
+    /* The headline — stays on ONE line on desktop */
+    .hero-hl {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(48px, 7vw, 86px);
+      letter-spacing: -0.04em; line-height: 0.95;
+      white-space: nowrap; color: var(--t100);
+      margin-bottom: 10px; animation: fu 0.68s 0.07s ease both;
+    }
+    .hero-hl .vio { color: var(--violet); }
+
+    .hero-shd {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: clamp(15px, 1.8vw, 20px); letter-spacing: -0.01em;
+      color: var(--t35); margin-bottom: 40px; animation: fu 0.68s 0.14s ease both;
+    }
+    .hero-body {
+      font-family: 'Inter', sans-serif; font-weight: 300; font-size: 16px;
+      color: var(--t55); line-height: 1.75; max-width: 500px;
+      margin: 0 auto 52px; animation: fu 0.68s 0.21s ease both;
+    }
+
+    .hero-form {
+      display: flex; gap: 0; max-width: 400px; width: 100%;
+      margin: 0 auto; animation: fu 0.68s 0.28s ease both;
+    }
+    .hero-form input {
+      flex: 1; background: var(--deep); border: 1px solid var(--border-sm);
+      border-right: none; border-radius: 6px 0 0 6px;
+      padding: 13px 18px; color: var(--t100);
+      font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400;
+      outline: none; transition: border-color 0.18s;
+    }
+    .hero-form input::placeholder { color: var(--muted); }
+    .hero-form input:focus { border-color: var(--violet-muted); }
+    .hero-form .btn-primary { border-radius: 0 6px 6px 0; border: none; flex-shrink: 0; }
+
+    .hero-fine {
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 400;
+      color: var(--t20); letter-spacing: 0.03em; margin: 14px auto 0; max-width: 380px;
+      animation: fu 0.68s 0.35s ease both;
+    }
+    .hero-ok {
+      display: none; font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      color: var(--smoke); background: rgba(139,154,180,0.06);
+      border: 1px solid rgba(139,154,180,0.18); border-radius: 6px;
+      padding: 16px 20px; max-width: 400px; margin: 0 auto;
+    }
+
+    /* Stats under hero */
+    .hero-proof {
+      display: flex; align-items: center; justify-content: center;
+      gap: 28px; margin-top: 60px; animation: fu 0.68s 0.42s ease both;
+    }
+    .pf-div { width: 1px; height: 28px; background: var(--border-sm); }
+    .pf-stat .v {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px;
+      letter-spacing: -0.03em; color: var(--t100);
+    }
+    .pf-stat .v .a { color: var(--violet); }
+    .pf-stat .l { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 400; color: var(--t35); letter-spacing: 0.03em; margin-top: 2px; }
+
+    @keyframes fu { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+    @keyframes pg { 0%,100%{box-shadow:0 0 0 0 rgba(124,92,252,0.7);}50%{box-shadow:0 0 0 5px rgba(124,92,252,0);} }
+
+    /* ════════════════════════════════
+       AGENT LOG STRIP
+    ════════════════════════════════ */
+    .agent-strip {
+      background: var(--deep); overflow: hidden;
+      border-top: 1px solid var(--border-sm); border-bottom: 1px solid var(--border-sm);
+      padding: 16px 0;
+    }
+    .agent-track { display: flex; gap: 56px; animation: sl 32s linear infinite; width: max-content; }
+    .ag { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.04em; white-space: nowrap; display: flex; align-items: center; gap: 10px; }
+    .ag-ts  { color: var(--muted); }
+    .ag-ok  { color: var(--smoke); }
+    .ag-act { color: var(--violet-light); }
+    .ag-sep { color: var(--border-sm); opacity: 0.5; }
+    @keyframes sl { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+    /* ════════════════════════════════
+       STATS ROW
+    ════════════════════════════════ */
+    .stats-row { background: var(--void); border-bottom: 1px solid var(--border-sm); }
+    .stats-inner { max-width: 1040px; margin: 0 auto; padding: 0 48px; display: grid; grid-template-columns: repeat(4,1fr); }
+    .s-cell { padding: 52px 0; text-align: center; border-right: 1px solid var(--border-sm); }
+    .s-cell:last-child { border-right: none; }
+    .s-val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 40px; letter-spacing: -0.04em; line-height: 1; color: var(--t100); }
+    .s-val .a { color: var(--violet); }
+    .s-lbl { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 400; color: var(--t35); letter-spacing: 0.03em; margin-top: 8px; }
+
+    /* ════════════════════════════════
+       SECTION SHELL
+    ════════════════════════════════ */
+    .sec { padding: 120px 48px; position: relative; overflow: hidden; }
+    .sec-in { max-width: 1040px; margin: 0 auto; }
+    .sec-narrow { max-width: 680px; margin: 0 auto; }
+
+    /* ════════════════════════════════
+       PROBLEM
+    ════════════════════════════════ */
+    .sec-problem { background: var(--void); }
+    .prob-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-top: 56px; }
+    .prob-copy h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(28px,3.5vw,36px); letter-spacing:-0.025em; line-height:1.1; color:var(--t100); margin-bottom:20px; }
+    .prob-copy p { font-family:'Inter',sans-serif; font-weight:300; font-size:16px; color:var(--t55); line-height:1.75; margin-bottom:20px; }
+
+    /* Terminal */
+    .terminal { background: var(--deep); border: 1px solid var(--border-sm); border-radius: 8px; overflow: hidden; }
+    .term-bar { background: var(--surface); border-bottom: 1px solid var(--border-sm); padding: 12px 16px; display: flex; align-items: center; gap: 8px; }
+    .tb-d { width: 10px; height: 10px; border-radius: 50%; }
+    .term-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--t35); margin-left: 4px; letter-spacing: 0.06em; }
+    .term-body { padding: 20px; }
+    .t-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid rgba(200,208,224,0.04); }
+    .t-row:last-child { border-bottom: none; }
+    .t-name { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--t35); }
+    .t-found { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; color: var(--breach); letter-spacing: 0.08em; padding: 2px 8px; background: rgba(255,60,80,0.08); border: 1px solid rgba(255,60,80,0.18); border-radius: 3px; }
+    .t-rm { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--smoke); letter-spacing: 0.06em; display: flex; align-items: center; gap: 6px; }
+    .t-spin { width: 8px; height: 8px; border: 1.5px solid var(--smoke); border-top-color: transparent; border-radius: 50%; animation: spin 0.9s linear infinite; }
+    .t-ct { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); }
+    @keyframes spin { to{transform:rotate(360deg);} }
+    .term-foot { background: var(--surface); border-top: 1px solid var(--border-sm); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .tf-lbl { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--breach); }
+    .tf-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: -0.03em; color: var(--breach); }
+
+    /* ════════════════════════════════
+       HOW IT WORKS
+    ════════════════════════════════ */
+    .sec-how { background: var(--deep); }
+    .how-hd { text-align: center; margin-bottom: 64px; }
+    .how-hd h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(28px,3.5vw,36px); letter-spacing:-0.025em; line-height:1.1; color:var(--t100); margin-top:8px; }
+    .how-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border-sm); border: 1px solid var(--border-sm); border-radius: 8px; overflow: hidden; }
+    .how-step { background: var(--deep); padding: 48px 36px; }
+    .step-n { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; letter-spacing:0.1em; color: var(--violet-muted); margin-bottom:32px; }
+    .step-ic { width:44px; height:44px; background:var(--violet-muted); border-radius:6px; display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+    .step-ic svg { width:20px; height:20px; }
+    .how-step h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:18px; letter-spacing:-0.01em; color:var(--t100); margin-bottom:12px; }
+    .how-step p { font-family:'Inter',sans-serif; font-weight:400; font-size:14px; color:var(--t35); line-height:1.65; }
+
+    /* ════════════════════════════════
+       FEATURES
+    ════════════════════════════════ */
+    .sec-feat { background: var(--void); }
+    .feat-hd { margin-bottom:64px; }
+    .feat-hd h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(28px,3.5vw,36px); letter-spacing:-0.025em; line-height:1.1; color:var(--t100); margin-top:8px; }
+    .feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border-sm); border:1px solid var(--border-sm); border-radius:8px; overflow:hidden; }
+    .fc { background:var(--void); padding:40px 32px; transition:background 0.2s; }
+    .fc:hover { background:var(--deep); }
+    .fc.wide { grid-column:span 2; background:var(--surface); }
+    .fc.wide:hover { background:var(--raised); }
+    .fc-lbl { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--violet); margin-bottom:16px; }
+    .fc h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:18px; letter-spacing:-0.01em; color:var(--t100); margin-bottom:10px; }
+    .fc p { font-family:'Inter',sans-serif; font-weight:400; font-size:14px; color:var(--t35); line-height:1.65; }
+
+    /* ════════════════════════════════
+       TESTIMONIALS
+    ════════════════════════════════ */
+    .sec-test { background: var(--deep); }
+    .test-hd { margin-bottom:64px; }
+    .test-hd h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(28px,3.5vw,36px); letter-spacing:-0.025em; line-height:1.1; color:var(--t100); margin-top:8px; }
+    .t-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .tc { background:var(--surface); border:1px solid var(--border-sm); border-radius:8px; padding:32px 28px; display:flex; flex-direction:column; transition:border-color 0.2s; }
+    .tc:hover { border-color:var(--violet-muted); }
+    .tc.wide { grid-column:span 2; background:var(--raised); border-color:var(--border); }
+    .t-stars { font-size:12px; color:#F59E0B; letter-spacing:2px; margin-bottom:18px; }
+    .t-q { font-family:'Inter',sans-serif; font-weight:300; font-size:15px; color:var(--t55); line-height:1.75; flex:1; margin-bottom:22px; }
+    .tc.wide .t-q { font-size:17px; }
+    .t-auth { display:flex; align-items:center; gap:12px; }
+    .t-av { width:38px; height:38px; border-radius:50%; background:var(--violet-muted); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--violet-light); flex-shrink:0; }
+    .t-nm { font-family:'Inter',sans-serif; font-weight:500; font-size:13px; color:var(--t100); }
+    .t-mt { font-family:'Inter',sans-serif; font-size:11px; color:var(--t35); margin-top:1px; }
+
+    /* ════════════════════════════════
+       WAITLIST
+    ════════════════════════════════ */
+    .sec-wl { background:var(--void); text-align:center; }
+    .wl-smoke { position:absolute; top:0; left:50%; transform:translateX(-50%); width:700px; height:420px; background:radial-gradient(ellipse at 50% 0%, rgba(124,92,252,0.18) 0%, rgba(59,31,168,0.09) 42%, transparent 70%); pointer-events:none; }
+    .wl-in { position:relative; z-index:2; }
+    .wl-pill { display:inline-flex; align-items:center; gap:8px; background:rgba(124,92,252,0.07); border:1px solid rgba(124,92,252,0.18); border-radius:4px; padding:5px 14px; margin-bottom:36px; }
+    .wl-pulse { width:6px; height:6px; border-radius:50%; background:var(--violet); animation:pg 2.4s ease-in-out infinite; }
+    .wl-pill span { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--violet-light); letter-spacing:0.06em; }
+    .wl-hl { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(36px,5vw,54px); letter-spacing:-0.035em; line-height:1.05; color:var(--t100); margin-bottom:16px; }
+    .wl-sub { font-family:'Inter',sans-serif; font-weight:300; font-size:16px; color:var(--t55); line-height:1.7; max-width:460px; margin:0 auto 44px; }
+    .wl-form { display:flex; flex-direction:column; gap:10px; max-width:360px; margin:0 auto; }
+    .wl-form input { background:var(--deep); border:1px solid var(--border-sm); border-radius:6px; padding:13px 18px; color:var(--t100); font-family:'Inter',sans-serif; font-size:14px; font-weight:400; outline:none; transition:border-color 0.18s; }
+    .wl-form input::placeholder { color:var(--muted); }
+    .wl-form input:focus { border-color:var(--violet-muted); }
+    .wl-form .btn-primary { width:100%; justify-content:center; padding:14px; }
+    .wl-perks { display:flex; align-items:center; justify-content:center; gap:22px; flex-wrap:wrap; margin-top:18px; }
+    .wl-perk { display:flex; align-items:center; gap:6px; font-family:'Inter',sans-serif; font-size:12px; font-weight:400; color:var(--t35); }
+    .pchk { color:var(--smoke); }
+    .wl-ok { display:none; font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--smoke); background:rgba(139,154,180,0.06); border:1px solid rgba(139,154,180,0.16); border-radius:6px; padding:18px 24px; max-width:360px; margin:0 auto; }
+
+    /* ════════════════════════════════
+       FOOTER
+    ════════════════════════════════ */
+    footer { background:var(--void); border-top:1px solid var(--border-sm); padding:40px 48px; }
+    .ft-in { max-width:1040px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; }
+    .ft-links { display:flex; gap:26px; list-style:none; }
+    .ft-links a { font-family:'Inter',sans-serif; font-size:13px; font-weight:400; color:var(--t35); text-decoration:none; transition:color 0.15s; }
+    .ft-links a:hover { color:var(--t100); }
+    .ft-copy { font-family:'Inter',sans-serif; font-size:12px; font-weight:400; color:var(--t20); max-width:1040px; margin:20px auto 0; padding-top:20px; border-top:1px solid var(--border-sm); text-align:center; }
+
+    /* ════════════════════════════════
+       SCROLL REVEAL
+    ════════════════════════════════ */
+    .rv { opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease; }
+    .rv.in { opacity:1; transform:none; }
+
+    /* ════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════ */
+    @media (max-width: 900px) {
+      .prob-layout { grid-template-columns:1fr; gap:48px; }
+      .how-grid { grid-template-columns:1fr; }
+      .feat-grid { grid-template-columns:1fr; }
+      .fc.wide { grid-column:span 1; }
+      .t-grid { grid-template-columns:1fr; }
+      .tc.wide { grid-column:span 1; }
+      .stats-inner { grid-template-columns:repeat(2,1fr); }
+      .s-cell:nth-child(2) { border-right:none; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding:0 20px; }
+      .nav-links { display:none; }
+      .hamburger { display:flex; }
+      .btn-ghost { display:none; }
+
+      .hero { padding:90px 24px 60px; }
+      .hero-hl { font-size:clamp(36px,10.5vw,60px); white-space:normal; word-break:keep-all; }
+      .hero-form { flex-direction:column; }
+      .hero-form input { border-right:1px solid var(--border-sm); border-radius:6px; }
+      .hero-form .btn-primary { border-radius:6px; }
+      .hero-proof { flex-wrap:wrap; gap:18px; }
+      .pf-div { display:none; }
+
+      .sec { padding:80px 24px; }
+      .stats-inner { padding:0 24px; }
+      .s-cell { padding:36px 0; }
+
+      footer { padding:32px 24px; }
+      .ft-in { flex-direction:column; align-items:flex-start; gap:14px; }
+      .ft-links { flex-wrap:wrap; gap:16px; }
+    }
+
+    @media (max-width: 430px) {
+      .hero-hl { font-size:clamp(30px,10vw,50px); }
+      .wl-perks { gap:14px; }
+      .stats-inner { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="#" class="logo"><span class="vio">[UN]</span><span class="wrd">STALKER</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#" class="btn-ghost">Log in</a>
+    <a href="#waitlist" class="btn-primary">Join Waitlist</a>
+  </div>
+  <button class="hamburger" aria-label="Menu">
+    <div class="ham-line"></div><div class="ham-line"></div><div class="ham-line"></div>
+  </button>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-smoke"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+
+    <div class="hero-pill">
+      <span class="h-pulse"></span>
+      <span>Early access open — 5,528 people protected</span>
+    </div>
+
+    <h1 class="hero-hl"><span class="vio">[UN]</span>STALKER</h1>
+    <p class="hero-shd">Your data is everywhere. We erase it.</p>
+
+    <p class="hero-body">Your personal data is being bought and sold by 350+ data brokers you've never heard of. Unstalker is the silent AI agent that erases you from their records — automatically, permanently.</p>
+
+    <div id="hero-cta">
+      <div class="hero-form">
+        <input type="email" id="hero-email" placeholder="Enter your email" />
+        <button class="btn-primary" onclick="heroSubmit()">Get early access</button>
+      </div>
+      <p class="hero-fine">Free forever for your first scan. No card required.</p>
+    </div>
+    <div class="hero-ok" id="hero-ok">agent.waitlist() → added ✓ · we'll be in touch soon</div>
+
+    <div class="hero-proof">
+      <div class="pf-stat"><div class="v"><span class="cu" data-t="350">0</span><span class="a">+</span></div><div class="l">brokers covered</div></div>
+      <div class="pf-div"></div>
+      <div class="pf-stat"><div class="v"><span class="cu" data-t="5528">0</span></div><div class="l">people protected</div></div>
+      <div class="pf-div"></div>
+      <div class="pf-stat"><div class="v">&lt;48h</div><div class="l">avg removal time</div></div>
+      <div class="pf-div"></div>
+      <div class="pf-stat"><div class="v">24/7</div><div class="l">monitoring</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ AGENT LOG STRIP ══ -->
+<div class="agent-strip">
+  <div class="agent-track">
+    <div class="ag"><span class="ag-ts">08:14:22</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">spokeo.com</span><span class="ag-sep">·</span><span class="ag-ts">3 records</span></div>
+    <div class="ag"><span class="ag-ts">08:14:36</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">whitepages.com</span><span class="ag-sep">·</span><span class="ag-ts">1 record</span></div>
+    <div class="ag"><span class="ag-ts">08:15:01</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">fastpeoplesearch.com</span><span class="ag-sep">·</span><span class="ag-ts">5 records</span></div>
+    <div class="ag"><span class="ag-ts">08:15:44</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">beenverified.com</span><span class="ag-sep">·</span><span class="ag-ts">2 records</span></div>
+    <div class="ag"><span class="ag-ts">08:16:08</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">intelius.com</span><span class="ag-sep">·</span><span class="ag-ts">4 records</span></div>
+    <div class="ag"><span class="ag-ts">08:16:33</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">mylife.com</span><span class="ag-sep">·</span><span class="ag-ts">6 records</span></div>
+    <div class="ag"><span class="ag-ts">08:17:02</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">radaris.com</span><span class="ag-sep">·</span><span class="ag-ts">2 records</span></div>
+    <div class="ag"><span class="ag-ts">08:17:19</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">peoplefinders.com</span><span class="ag-sep">·</span><span class="ag-ts">3 records</span></div>
+    <!-- dupe for seamless loop -->
+    <div class="ag"><span class="ag-ts">08:14:22</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">spokeo.com</span><span class="ag-sep">·</span><span class="ag-ts">3 records</span></div>
+    <div class="ag"><span class="ag-ts">08:14:36</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">whitepages.com</span><span class="ag-sep">·</span><span class="ag-ts">1 record</span></div>
+    <div class="ag"><span class="ag-ts">08:15:01</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">fastpeoplesearch.com</span><span class="ag-sep">·</span><span class="ag-ts">5 records</span></div>
+    <div class="ag"><span class="ag-ts">08:15:44</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">beenverified.com</span><span class="ag-sep">·</span><span class="ag-ts">2 records</span></div>
+    <div class="ag"><span class="ag-ts">08:16:08</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">intelius.com</span><span class="ag-sep">·</span><span class="ag-ts">4 records</span></div>
+    <div class="ag"><span class="ag-ts">08:16:33</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">mylife.com</span><span class="ag-sep">·</span><span class="ag-ts">6 records</span></div>
+    <div class="ag"><span class="ag-ts">08:17:02</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">radaris.com</span><span class="ag-sep">·</span><span class="ag-ts">2 records</span></div>
+    <div class="ag"><span class="ag-ts">08:17:19</span><span class="ag-sep">·</span><span class="ag-ok">removed</span><span class="ag-act">peoplefinders.com</span><span class="ag-sep">·</span><span class="ag-ts">3 records</span></div>
+  </div>
+</div>
+
+<!-- ══ STATS ══ -->
+<div class="stats-row">
+  <div class="stats-inner">
+    <div class="s-cell rv"><div class="s-val"><span class="cu" data-t="350">0</span><span class="a">+</span></div><div class="s-lbl">data brokers covered</div></div>
+    <div class="s-cell rv" style="transition-delay:0.1s"><div class="s-val"><span class="cu" data-t="5528">0</span></div><div class="s-lbl">people protected</div></div>
+    <div class="s-cell rv" style="transition-delay:0.2s"><div class="s-val">&lt;48h</div><div class="s-lbl">average removal time</div></div>
+    <div class="s-cell rv" style="transition-delay:0.3s"><div class="s-val">24/7</div><div class="s-lbl">continuous monitoring</div></div>
+  </div>
+</div>
+
+<!-- ══ PROBLEM ══ -->
+<section class="sec sec-problem">
+  <div class="sec-in">
+    <div class="prob-layout">
+      <div class="prob-copy rv">
+        <div class="eyebrow">The problem</div>
+        <h2>Your data is<br/>already out there.</h2>
+        <p>Hundreds of companies you've never heard of are buying and selling your home address, phone number, family relationships, and search history — without your consent.</p>
+        <p>Manual opt-out forms don't work. They re-add you within 30 days. The cycle is designed to exhaust you into giving up. We don't.</p>
+      </div>
+      <div class="rv" style="transition-delay:0.12s">
+        <div class="terminal">
+          <div class="term-bar">
+            <div class="tb-d" style="background:#FF3C50;opacity:0.8"></div>
+            <div class="tb-d" style="background:#F59E0B;opacity:0.6;margin-left:4px"></div>
+            <div class="tb-d" style="background:var(--smoke);opacity:0.4;margin-left:4px"></div>
+            <span class="term-title">agent.scan() — live</span>
+          </div>
+          <div class="term-body">
+            <div class="t-row"><span class="t-name">fastpeoplesearch.com</span><span class="t-found">FOUND</span><span class="t-ct">3 records</span></div>
+            <div class="t-row"><span class="t-name">spokeo.com</span><span class="t-found">FOUND</span><span class="t-ct">7 records</span></div>
+            <div class="t-row"><span class="t-name">beenverified.com</span><span class="t-rm"><div class="t-spin"></div>removing</span><span class="t-ct">2 records</span></div>
+            <div class="t-row"><span class="t-name">whitepages.com</span><span class="t-found">FOUND</span><span class="t-ct">5 records</span></div>
+            <div class="t-row"><span class="t-name">intelius.com</span><span class="t-rm"><div class="t-spin"></div>removing</span><span class="t-ct">4 records</span></div>
+          </div>
+          <div class="term-foot">
+            <span class="tf-lbl">exposures found</span>
+            <span class="tf-num">21</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="sec sec-how" id="how">
+  <div class="sec-in">
+    <div class="how-hd rv">
+      <div class="eyebrow">How it works</div>
+      <h2>Set it once.<br/>We handle everything else.</h2>
+    </div>
+    <div class="how-grid rv" style="transition-delay:0.1s">
+      <div class="how-step">
+        <div class="step-n">01 — SCAN</div>
+        <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#A68FFD" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg></div>
+        <h3>Scan &amp; identify</h3>
+        <p>We crawl 350+ data broker sites and map every listing with your name, address, phone, or relatives — a full threat map in minutes.</p>
+      </div>
+      <div class="how-step">
+        <div class="step-n">02 — REMOVE</div>
+        <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#A68FFD" stroke-width="1.5" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></div>
+        <h3>Automate opt-outs</h3>
+        <p>The AI agent navigates each broker's opt-out flow — solving CAPTCHAs, handling verifications, filing every removal request simultaneously.</p>
+      </div>
+      <div class="how-step">
+        <div class="step-n">03 — PROTECT</div>
+        <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#A68FFD" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Monitor &amp; re-remove</h3>
+        <p>Brokers re-add your data every 30–90 days. We watch continuously and fire new removals the moment you reappear.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section class="sec sec-feat" id="features">
+  <div class="sec-in">
+    <div class="feat-hd rv">
+      <div class="eyebrow">Features</div>
+      <h2>Privacy, fully automated.</h2>
+    </div>
+    <div class="feat-grid rv" style="transition-delay:0.1s">
+      <div class="fc wide">
+        <div class="fc-lbl">Core engine</div>
+        <h3>AI removal agent — deterministic, not approximate</h3>
+        <p>Every opt-out adapter is purpose-built for each broker's exact flow. The agent runs headful browser sessions, navigates login walls, solves CAPTCHAs, and handles multi-step email verifications. Nothing slips through.</p>
+      </div>
+      <div class="fc">
+        <div class="fc-lbl">Visibility</div>
+        <h3>Privacy score &amp; threat map</h3>
+        <p>Real-time score showing your exposure level, which data types are at risk, and a full timeline of every removal filed.</p>
+      </div>
+      <div class="fc">
+        <div class="fc-lbl">Coverage</div>
+        <h3>350+ brokers and growing</h3>
+        <p>From Spokeo to obscure regional people-search sites — new adapters shipped every week.</p>
+      </div>
+      <div class="fc">
+        <div class="fc-lbl">Alerts</div>
+        <h3>Instant re-listing alerts</h3>
+        <p>The moment your data reappears, we notify you and auto-file removal. No lag, no manual checking.</p>
+      </div>
+      <div class="fc">
+        <div class="fc-lbl">Trust</div>
+        <h3>Zero data resale — ever</h3>
+        <p>We use your information exclusively to file removals. We never sell, share, or retain more than the minimum required.</p>
+      </div>
+      <div class="fc">
+        <div class="fc-lbl">Interface</div>
+        <h3>Dashboard &amp; agent logs</h3>
+        <p>Every broker, every status, live agent activity, and your privacy score — in one clear interface.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section class="sec sec-test" id="testimonials">
+  <div class="sec-in">
+    <div class="test-hd rv">
+      <div class="eyebrow">Trusted by people who value their privacy</div>
+      <h2>You never consented to this.<br/>We're fixing it.</h2>
+    </div>
+    <div class="t-grid">
+      <div class="tc wide rv">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-q">"I used to spend hours manually submitting opt-out requests every few months — and they'd always come back anyway. Unstalker wiped 47 listings in the first 24 hours. I've been off the grid ever since. This is the tool I didn't know I needed."</p>
+        <div class="t-auth"><div class="t-av">MK</div><div><div class="t-nm">Marcus K.</div><div class="t-mt">Software Engineer — Austin, TX</div></div></div>
+      </div>
+      <div class="tc rv" style="transition-delay:0.1s">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-q">"My stalker ex found my new address within weeks of me moving. Unstalker removed me from 30+ sites in 48 hours. I finally feel safe."</p>
+        <div class="t-auth"><div class="t-av" style="background:rgba(124,92,252,0.2)">SR</div><div><div class="t-nm">Sarah R.</div><div class="t-mt">Nurse — Chicago, IL</div></div></div>
+      </div>
+      <div class="tc rv">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-q">"As a public defender I receive death threats. Having my home address listed publicly was terrifying. 60+ entries removed and re-protected automatically."</p>
+        <div class="t-auth"><div class="t-av" style="background:rgba(124,92,252,0.12)">JT</div><div><div class="t-nm">James T.</div><div class="t-mt">Public Defender — New York, NY</div></div></div>
+      </div>
+      <div class="tc rv" style="transition-delay:0.1s">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-q">"I tested 4 data removal services. Unstalker is the only one that actually re-removes when data comes back. Set it and forget it — for real."</p>
+        <div class="t-auth"><div class="t-av" style="background:rgba(139,154,180,0.12)">DL</div><div><div class="t-nm">Diana L.</div><div class="t-mt">Freelance Journalist</div></div></div>
+      </div>
+      <div class="tc rv" style="transition-delay:0.15s">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-q">"The agent logs show me exactly what's happening in real time. Finally a privacy tool built by engineers who understand automation."</p>
+        <div class="t-auth"><div class="t-av" style="background:rgba(59,31,168,0.35)">NK</div><div><div class="t-nm">Natalie K.</div><div class="t-mt">Security Researcher</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WAITLIST ══ -->
+<section class="sec sec-wl" id="waitlist">
+  <div class="wl-smoke"></div>
+  <div class="sec-narrow wl-in">
+    <div class="rv">
+      <div class="wl-pill"><span class="wl-pulse"></span><span>5,528 people already on the list</span></div>
+      <h2 class="wl-hl">Join the Waitlist.</h2>
+      <p class="wl-sub">Get early access to Unstalker. Your first scan is free. No card required. We'll reach out the moment your spot opens.</p>
+      <div id="wl-area">
+        <div class="wl-form">
+          <input type="text" id="wl-name" placeholder="Your name" />
+          <input type="email" id="wl-email" placeholder="Your email address" />
+          <button class="btn-primary" onclick="wlSubmit()">Get early access</button>
+        </div>
+        <div class="wl-perks">
+          <div class="wl-perk"><span class="pchk">✓</span> First scan free</div>
+          <div class="wl-perk"><span class="pchk">✓</span> No credit card</div>
+          <div class="wl-perk"><span class="pchk">✓</span> Cancel anytime</div>
+        </div>
+      </div>
+      <div class="wl-ok" id="wl-ok">agent.waitlist() → added ✓ · we'll be in touch soon</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="ft-in">
+    <a href="#" class="logo"><span class="vio">[UN]</span><span class="wrd">STALKER</span></a>
+    <ul class="ft-links">
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Service</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+  <p class="ft-copy">© 2026 Unstalker. Privacy is a right. We're here to enforce it.</p>
+</footer>
+
+<script>
+  /* Scroll reveal */
+  const ro = new IntersectionObserver(
+    es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } }),
+    { threshold: 0.1 }
+  );
+  document.querySelectorAll('.rv').forEach(el => ro.observe(el));
+
+  /* Count-up (hero + stats) */
+  function countUp(el, target, dur = 1500) {
+    const s = performance.now();
+    const tick = now => {
+      const p = Math.min((now - s) / dur, 1);
+      el.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target).toLocaleString();
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+  const co = new IntersectionObserver(
+    es => es.forEach(e => { if (e.isIntersecting) { countUp(e.target, +e.target.dataset.t); co.unobserve(e.target); } }),
+    { threshold: 0.4 }
+  );
+  document.querySelectorAll('.cu').forEach(el => co.observe(el));
+
+  /* Forms */
+  function heroSubmit() {
+    const v = document.getElementById('hero-email').value.trim();
+    if (!v || !v.includes('@')) return;
+    document.getElementById('hero-cta').style.display = 'none';
+    document.getElementById('hero-ok').style.display = 'block';
+  }
+  function wlSubmit() {
+    const v = document.getElementById('wl-email').value.trim();
+    if (!v || !v.includes('@')) return;
+    document.getElementById('wl-area').style.display = 'none';
+    document.getElementById('wl-ok').style.display = 'block';
+  }
+</script>
+</body>
+</html>

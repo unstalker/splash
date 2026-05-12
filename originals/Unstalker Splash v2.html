@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>[UN]STALKER — Privacy is a right. We're here to enforce it.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ─────────────────────────────────────────────────────────────
+   [UN]STALKER — Splash v2
+   Tokens imported from Design System v1.0
+───────────────────────────────────────────────────────────── */
+:root {
+  --void:         #08080F;
+  --deep:         #0D0D1A;
+  --surface:      #13132B;
+  --raised:       #1E1E40;
+  --violet:       #7C5CFC;
+  --violet-light: #A68FFD;
+  --violet-deep:  #3B1FA8;
+  --violet-muted: #2D1F70;
+  --smoke:        #8B9AB4;
+  --silver:       #C8D0E0;
+  --breach:       #FF3C50;
+  --muted:        #6B6B8A;
+  --signal:       #3DDC97;
+  --t100: rgba(200,208,224,1.00);
+  --t70:  rgba(200,208,224,0.70);
+  --t55:  rgba(200,208,224,0.55);
+  --t35:  rgba(200,208,224,0.35);
+  --t20:  rgba(200,208,224,0.20);
+  --border:    rgba(124,92,252,0.14);
+  --border-sm: rgba(200,208,224,0.08);
+  --border-md: rgba(200,208,224,0.12);
+}
+*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--void);
+  color: var(--t100);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+body::after {
+  content:''; position:fixed; inset:0;
+  pointer-events:none; z-index:9000; opacity:0.028;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Mono helper (used a lot) */
+.mono { font-family:'JetBrains Mono', monospace; }
+
+/* ── LOGO ── */
+.logo {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:17px; letter-spacing:-0.02em;
+  text-decoration:none; white-space:nowrap;
+  display:inline-flex; align-items:center;
+}
+.logo .vio { color: var(--violet); }
+.logo .wrd { color: var(--t100); }
+
+/* ── Buttons ── */
+.btn-primary {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  background: var(--violet); color:#fff;
+  font-family:'Inter',sans-serif; font-weight:500;
+  font-size:14px; letter-spacing:0.02em;
+  padding:13px 26px; border-radius:6px;
+  border:none; cursor:pointer; text-decoration:none;
+  transition: background 0.18s, transform 0.18s;
+  white-space:nowrap;
+}
+.btn-primary:hover { background: var(--violet-light); }
+.btn-primary:active { transform: translateY(1px); }
+.btn-ghost {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  background:transparent; color:var(--t55);
+  font-family:'Inter',sans-serif; font-weight:500;
+  font-size:14px; letter-spacing:0.02em;
+  padding:12px 22px; border-radius:6px;
+  border:1px solid var(--border-md); cursor:pointer;
+  text-decoration:none; transition:border-color 0.18s, color 0.18s;
+  white-space:nowrap;
+}
+.btn-ghost:hover { border-color:var(--violet-muted); color:var(--t100); }
+
+/* ── Eyebrow (DS rail form) ── */
+.eyebrow {
+  font-family:'JetBrains Mono', monospace;
+  font-weight:500; font-size:11px;
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--violet-light); margin-bottom:20px;
+  display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before { content:''; display:inline-block; width:20px; height:1px; background:var(--violet); }
+
+/* Bracket motif — reusable */
+.brkt { color: var(--violet); font-family:'Syne',sans-serif; font-weight:800; }
+
+/* ── Pulse ── */
+.pulse { width:6px; height:6px; border-radius:50%; background:var(--violet); animation:pg 2.4s ease-in-out infinite; }
+.pulse.signal { background: var(--signal); }
+@keyframes pg { 0%,100%{box-shadow:0 0 0 0 rgba(124,92,252,0.65);} 50%{box-shadow:0 0 0 5px rgba(124,92,252,0);} }
+@keyframes pgs { 0%,100%{box-shadow:0 0 0 0 rgba(61,220,151,0.65);} 50%{box-shadow:0 0 0 5px rgba(61,220,151,0);} }
+.pulse.signal { animation-name: pgs; }
+
+/* ════════════════════════════════
+   NAV — adds "soft launch" bar above
+════════════════════════════════ */
+.launchbar {
+  position:fixed; top:0; left:0; right:0; z-index:801;
+  height:32px; background:var(--violet-deep);
+  display:flex; align-items:center; justify-content:center; gap:14px;
+  font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em;
+  color:#EDE7FF; border-bottom:1px solid rgba(255,255,255,0.06);
+  overflow:hidden;
+}
+.launchbar .dot { width:5px; height:5px; border-radius:50%; background:var(--signal); box-shadow:0 0 0 0 rgba(61,220,151,0.7); animation:pgs 2.4s ease-in-out infinite; }
+.launchbar .tag { opacity:0.7; }
+.launchbar a { color:#fff; text-decoration:underline; text-decoration-color: rgba(255,255,255,0.35); text-underline-offset:3px; }
+.launchbar a:hover { text-decoration-color:#fff; }
+
+nav {
+  position:fixed; top:32px; left:0; right:0; z-index:800;
+  height:60px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 48px;
+  background: rgba(8,8,15,0.88); backdrop-filter: blur(24px);
+  border-bottom:1px solid var(--border-sm);
+}
+.nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
+.nav-links a {
+  font-family:'Inter',sans-serif; font-weight:500; font-size:13px;
+  letter-spacing:0.02em; color:var(--t55); text-decoration:none; transition:color 0.15s;
+}
+.nav-links a:hover { color:var(--t100); }
+.nav-right { display:flex; align-items:center; gap:10px; }
+.hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; }
+.ham-line { width:20px; height:1.5px; background:var(--t55); border-radius:1px; }
+
+/* ════════════════════════════════
+   HERO
+════════════════════════════════ */
+.hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center; padding:150px 48px 80px;
+  position:relative; overflow:hidden; background:var(--void);
+}
+.hero-smoke {
+  position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:1000px; height:620px; pointer-events:none;
+  background:radial-gradient(ellipse at 50% 0%,
+    rgba(124,92,252,0.28) 0%, rgba(59,31,168,0.12) 42%, transparent 70%);
+}
+.hero-grid {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(124,92,252,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,92,252,0.05) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 72% 50% at 50% 10%, black 15%, transparent 100%);
+}
+.hero-inner { position:relative; z-index:2; max-width:900px; width:100%; }
+
+.hero-pill {
+  display:inline-flex; align-items:center; gap:10px;
+  background:rgba(124,92,252,0.07); border:1px solid rgba(124,92,252,0.22);
+  border-radius:4px; padding:6px 16px; margin-bottom:40px;
+  animation:fu 0.6s ease both;
+}
+.hero-pill .tx { font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.08em; color:var(--violet-light); }
+.hero-pill .ctr { color:#fff; font-weight:500; }
+
+.hero-hl {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:clamp(42px, 6.8vw, 80px);
+  letter-spacing:-0.04em; line-height:0.98;
+  color:var(--t100);
+  margin-bottom:24px; animation:fu 0.68s 0.07s ease both;
+}
+.hero-hl .vio { color: var(--violet); }
+.hero-hl .accent { color: var(--breach); }
+
+.hero-body {
+  font-family:'Inter',sans-serif; font-weight:300; font-size:17px;
+  color:var(--t70); line-height:1.7; max-width:560px;
+  margin:0 auto 44px; animation:fu 0.68s 0.21s ease both;
+}
+.hero-body b { color: var(--t100); font-weight:500; }
+
+.hero-form {
+  display:flex; gap:0; max-width:440px; width:100%;
+  margin:0 auto; animation:fu 0.68s 0.28s ease both;
+}
+.hero-form input {
+  flex:1; background:var(--deep); border:1px solid var(--border-md);
+  border-right:none; border-radius:6px 0 0 6px;
+  padding:14px 18px; color:var(--t100);
+  font-family:'Inter',sans-serif; font-size:14px; font-weight:400;
+  outline:none; transition:border-color 0.18s;
+}
+.hero-form input::placeholder { color:var(--muted); }
+.hero-form input:focus { border-color:var(--violet); }
+.hero-form .btn-primary { border-radius:0 6px 6px 0; flex-shrink:0; }
+
+.hero-fine {
+  font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:400;
+  color:var(--t35); letter-spacing:0.06em; margin:16px auto 0; max-width:440px;
+  animation:fu 0.68s 0.35s ease both;
+}
+.hero-fine .sep { color:var(--border); margin:0 8px; }
+
+.hero-ok {
+  display:none; font-family:'JetBrains Mono', monospace; font-size:13px;
+  color:var(--signal); background:rgba(61,220,151,0.05);
+  border:1px solid rgba(61,220,151,0.2); border-radius:6px;
+  padding:16px 20px; max-width:440px; margin:0 auto;
+}
+.hero-ok .pos { color:#fff; font-weight:500; }
+
+/* Hero proof strip */
+.hero-proof {
+  display:flex; align-items:center; justify-content:center;
+  gap:28px; margin-top:60px; flex-wrap:wrap;
+  animation:fu 0.68s 0.42s ease both;
+}
+.pf-div { width:1px; height:28px; background:var(--border-md); }
+.pf-stat .v { font-family:'Syne',sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.03em; color:var(--t100); }
+.pf-stat .v .a { color:var(--violet); }
+.pf-stat .l { font-family:'Inter',sans-serif; font-size:11px; font-weight:400; color:var(--t35); letter-spacing:0.03em; margin-top:2px; }
+
+@keyframes fu { from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:none;} }
+
+/* ════════════════════════════════
+   PRESS / AS SEEN IN
+════════════════════════════════ */
+.press {
+  background:var(--deep); border-top:1px solid var(--border-sm); border-bottom:1px solid var(--border-sm);
+  padding:28px 48px; overflow:hidden;
+}
+.press-in {
+  max-width:1040px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between; gap:36px; flex-wrap:wrap;
+}
+.press-lbl {
+  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--t35); white-space:nowrap;
+}
+.press-logos { display:flex; align-items:center; gap:40px; flex-wrap:wrap; opacity:0.75; }
+.press-logos .pl {
+  font-family:'Syne',sans-serif; font-weight:800; font-size:16px; letter-spacing:-0.02em;
+  color:var(--silver); white-space:nowrap; transition:color 0.18s;
+}
+.press-logos .pl.serif { font-family:'Inter',sans-serif; font-weight:600; font-style:italic; letter-spacing:-0.01em; }
+.press-logos .pl.mono { font-family:'JetBrains Mono', monospace; font-weight:500; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; }
+.press-logos .pl:hover { color:var(--t100); }
+
+/* ════════════════════════════════
+   DEMAND / LIVE-PROOF BAR
+════════════════════════════════ */
+.demand {
+  background:var(--void); border-bottom:1px solid var(--border-sm);
+}
+.demand-in {
+  max-width:1040px; margin:0 auto; padding:0 48px;
+  display:grid; grid-template-columns:repeat(4,1fr);
+}
+.d-cell {
+  padding:56px 28px; text-align:left;
+  border-right:1px solid var(--border-sm);
+  position:relative;
+}
+.d-cell:last-child { border-right:none; }
+.d-cell .k {
+  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--t35); margin-bottom:16px;
+}
+.d-cell .v {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:44px; letter-spacing:-0.04em; line-height:1; color:var(--t100);
+  display:flex; align-items:baseline; gap:4px;
+}
+.d-cell .v .a { color:var(--violet); }
+.d-cell .v .u { font-family:'Inter',sans-serif; font-weight:400; font-size:14px; color:var(--t35); letter-spacing:0; margin-left:6px; }
+.d-cell .delta {
+  font-family:'JetBrains Mono', monospace; font-size:11px; margin-top:10px;
+  color: var(--signal); display:flex; align-items:center; gap:6px; letter-spacing:0.04em;
+}
+.d-cell .delta::before { content:'▲'; font-size:9px; }
+.d-cell.breach .delta { color:var(--breach); }
+.d-cell.breach .delta::before { content:'●'; }
+
+/* ════════════════════════════════
+   SECTION SHELL
+════════════════════════════════ */
+.sec { padding:120px 48px; position:relative; overflow:hidden; }
+.sec-in { max-width:1080px; margin:0 auto; }
+.sec-narrow { max-width:680px; margin:0 auto; }
+
+.sec-hd { margin-bottom:64px; }
+.sec-hd h2 {
+  font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(30px,3.8vw,44px);
+  letter-spacing:-0.03em; line-height:1.08; color:var(--t100); margin-top:8px;
+}
+.sec-hd p {
+  font-family:'Inter',sans-serif; font-weight:300; font-size:16px;
+  color:var(--t55); line-height:1.75; margin-top:16px; max-width:620px;
+}
+.sec-hd.ctr { text-align:center; }
+.sec-hd.ctr .eyebrow { justify-content:center; }
+.sec-hd.ctr p { margin-left:auto; margin-right:auto; }
+
+/* ════════════════════════════════
+   PROBLEM (kept, tightened)
+════════════════════════════════ */
+.sec-problem { background:var(--void); }
+.prob-layout { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+.prob-copy h2 { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(30px,3.8vw,42px); letter-spacing:-0.03em; line-height:1.08; color:var(--t100); margin-bottom:22px; }
+.prob-copy p { font-family:'Inter',sans-serif; font-weight:300; font-size:16px; color:var(--t70); line-height:1.75; margin-bottom:18px; }
+.prob-copy p b { color:var(--t100); font-weight:500; }
+.prob-inline-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:28px; padding-top:28px; border-top:1px solid var(--border-sm); }
+.prob-is .n { font-family:'Syne',sans-serif; font-weight:800; font-size:24px; color:var(--violet); letter-spacing:-0.02em; }
+.prob-is .l { font-family:'Inter',sans-serif; font-size:12px; color:var(--t35); margin-top:4px; line-height:1.5; }
+
+/* Terminal */
+.terminal { background:var(--deep); border:1px solid var(--border-md); border-radius:8px; overflow:hidden; }
+.term-bar { background:var(--surface); border-bottom:1px solid var(--border-sm); padding:12px 16px; display:flex; align-items:center; gap:8px; }
+.tb-d { width:10px; height:10px; border-radius:50%; }
+.term-title { font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--t55); margin-left:4px; letter-spacing:0.06em; }
+.term-title .dim { color:var(--t35); }
+.term-body { padding:16px 20px; }
+.t-row { display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:16px; padding:12px 0; border-bottom:1px solid rgba(200,208,224,0.04); }
+.t-row:last-child { border-bottom:none; }
+.t-name { font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--t55); }
+.t-found { font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:500; color:var(--breach); letter-spacing:0.08em; padding:2px 8px; background:rgba(255,60,80,0.08); border:1px solid rgba(255,60,80,0.18); border-radius:3px; }
+.t-rm { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--violet-light); letter-spacing:0.06em; display:flex; align-items:center; gap:6px; padding:2px 8px; background:rgba(124,92,252,0.08); border:1px solid rgba(124,92,252,0.18); border-radius:3px; }
+.t-done { font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:500; color:var(--signal); letter-spacing:0.08em; padding:2px 8px; background:rgba(61,220,151,0.06); border:1px solid rgba(61,220,151,0.2); border-radius:3px; }
+.t-spin { width:8px; height:8px; border:1.5px solid var(--violet-light); border-top-color:transparent; border-radius:50%; animation:spin 0.9s linear infinite; }
+.t-ct { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--muted); min-width:70px; text-align:right; }
+@keyframes spin { to{transform:rotate(360deg);} }
+.term-foot { background:var(--surface); border-top:1px solid var(--border-sm); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; }
+.tf-lbl { font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--t55); letter-spacing:0.06em; }
+.tf-lbl .acc { color:var(--breach); }
+.tf-num { font-family:'Syne',sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.03em; color:var(--breach); }
+
+/* ════════════════════════════════
+   PRODUCT PREVIEW (new — soft launch)
+════════════════════════════════ */
+.sec-preview { background: linear-gradient(180deg, var(--void) 0%, var(--deep) 100%); position:relative; }
+.preview-wrap { position:relative; margin-top:48px; }
+.preview-frame {
+  background: var(--deep); border:1px solid var(--border-md); border-radius:12px;
+  overflow:hidden; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,92,252,0.08);
+}
+.pf-chrome {
+  background:var(--surface); padding:10px 16px;
+  display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border-sm);
+}
+.pf-chrome .c-dots { display:flex; gap:6px; }
+.pf-chrome .c-dots div { width:9px; height:9px; border-radius:50%; }
+.pf-chrome .c-url {
+  flex:1; background:var(--deep); border:1px solid var(--border-sm); border-radius:4px;
+  font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--t55);
+  padding:5px 12px; text-align:center; letter-spacing:0.02em;
+}
+.pf-chrome .c-url .lock { color:var(--signal); margin-right:6px; }
+.pf-chrome .c-url .path { color:var(--t35); }
+
+/* Dashboard mock */
+.dash { display:grid; grid-template-columns:220px 1fr; min-height:520px; }
+.dash-side { background:var(--void); border-right:1px solid var(--border-sm); padding:24px 18px; }
+.dash-side .logo-mini { font-family:'Syne',sans-serif; font-weight:800; font-size:14px; margin-bottom:32px; }
+.dash-side .logo-mini .vio { color:var(--violet); }
+.dash-side .nav-g { display:flex; flex-direction:column; gap:4px; }
+.dash-side .ni {
+  display:flex; align-items:center; gap:10px;
+  font-family:'Inter',sans-serif; font-size:12px; color:var(--t55);
+  padding:9px 12px; border-radius:6px; cursor:default; transition:background 0.15s;
+}
+.dash-side .ni .ic { width:14px; height:14px; opacity:0.7; }
+.dash-side .ni.active { background:rgba(124,92,252,0.1); color:var(--violet-light); }
+.dash-side .ni.active .ic { opacity:1; }
+.dash-side .g-lbl {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--t20); margin:24px 12px 8px;
+}
+
+.dash-main { padding:28px 32px; display:flex; flex-direction:column; gap:22px; min-width:0; }
+.dash-top { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; }
+.dash-top h3 { font-family:'Syne',sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.02em; }
+.dash-top .sub { font-family:'Inter',sans-serif; font-size:12px; color:var(--t35); margin-top:4px; }
+.dash-status { display:flex; align-items:center; gap:10px; background:rgba(61,220,151,0.06); border:1px solid rgba(61,220,151,0.2); padding:6px 12px; border-radius:20px; }
+.dash-status .tx { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--signal); letter-spacing:0.08em; }
+
+.dash-score-row { display:grid; grid-template-columns:1.1fr 1fr 1fr; gap:14px; }
+.score-card { background:var(--surface); border:1px solid var(--border-sm); border-radius:8px; padding:18px 20px; }
+.score-card .hd { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--t35); margin-bottom:12px; }
+.score-card .val { font-family:'Syne',sans-serif; font-weight:800; font-size:30px; letter-spacing:-0.03em; line-height:1; color:var(--t100); }
+.score-card .val .unit { font-family:'Inter',sans-serif; font-weight:400; font-size:13px; color:var(--t35); margin-left:4px; letter-spacing:0; }
+.score-card .val.ok { color:var(--signal); }
+.score-card .val.warn { color:var(--breach); }
+.score-card .meta { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--t55); margin-top:10px; letter-spacing:0.04em; }
+.score-card .bar { height:4px; background:var(--deep); border-radius:2px; margin-top:12px; overflow:hidden; }
+.score-card .bar i { display:block; height:100%; background: linear-gradient(90deg, var(--violet), var(--violet-light)); border-radius:2px; }
+
+.dash-log { background:var(--surface); border:1px solid var(--border-sm); border-radius:8px; overflow:hidden; }
+.dash-log-hd { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--border-sm); }
+.dash-log-hd .t { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--t70); letter-spacing:0.06em; }
+.dash-log-hd .t .acc { color:var(--violet-light); }
+.dash-log-hd .live { display:flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--signal); letter-spacing:0.1em; }
+.dash-log-body { padding:6px 0; max-height:220px; overflow:hidden; }
+.dl-row { display:grid; grid-template-columns: 70px 1fr auto auto; align-items:center; gap:14px; padding:9px 18px; font-family:'JetBrains Mono',monospace; font-size:11px; border-bottom:1px solid rgba(200,208,224,0.03); }
+.dl-row:last-child { border-bottom:none; }
+.dl-row .ts { color:var(--muted); }
+.dl-row .msg { color:var(--t70); }
+.dl-row .msg .h { color:var(--violet-light); }
+.dl-row .tag { font-size:9px; letter-spacing:0.1em; padding:2px 7px; border-radius:3px; text-transform:uppercase; font-weight:500; }
+.dl-row .tag.ok { color:var(--signal); background:rgba(61,220,151,0.08); border:1px solid rgba(61,220,151,0.2); }
+.dl-row .tag.scan { color:var(--violet-light); background:rgba(124,92,252,0.1); border:1px solid rgba(124,92,252,0.22); }
+.dl-row .tag.warn { color:var(--breach); background:rgba(255,60,80,0.08); border:1px solid rgba(255,60,80,0.2); }
+.dl-row .ct { color:var(--t35); font-size:10px; text-align:right; }
+
+/* Preview side-by-side callouts */
+.preview-notes { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:32px; }
+.pn {
+  font-family:'Inter',sans-serif; font-size:13px; color:var(--t55); line-height:1.65;
+  padding-left:16px; border-left:2px solid var(--violet-muted);
+}
+.pn b { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--t100); display:block; margin-bottom:4px; letter-spacing:-0.01em; }
+
+/* ════════════════════════════════
+   HOW IT WORKS
+════════════════════════════════ */
+.sec-how { background:var(--deep); }
+.how-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border-sm); border:1px solid var(--border-sm); border-radius:8px; overflow:hidden; }
+.how-step { background:var(--deep); padding:44px 32px; position:relative; }
+.how-step::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent, var(--violet), transparent); opacity:0; transition:opacity 0.3s; }
+.how-step:hover::before { opacity:1; }
+.step-n { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; letter-spacing:0.12em; color:var(--violet); margin-bottom:28px; }
+.step-ic { width:40px; height:40px; background:rgba(124,92,252,0.1); border:1px solid rgba(124,92,252,0.22); border-radius:6px; display:flex; align-items:center; justify-content:center; margin-bottom:18px; }
+.step-ic svg { width:18px; height:18px; }
+.how-step h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:18px; letter-spacing:-0.015em; color:var(--t100); margin-bottom:10px; }
+.how-step p { font-family:'Inter',sans-serif; font-weight:400; font-size:13.5px; color:var(--t55); line-height:1.65; }
+
+/* ════════════════════════════════
+   SOFT LAUNCH / ACCESS TIERS
+════════════════════════════════ */
+.sec-access { background:var(--void); position:relative; }
+.tiers { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:16px; }
+.tier {
+  position:relative;
+  background: var(--surface); border:1px solid var(--border-md); border-radius:10px;
+  padding:32px 28px; display:flex; flex-direction:column;
+}
+.tier.hero { background: linear-gradient(180deg, rgba(124,92,252,0.08) 0%, var(--surface) 60%); border-color: var(--violet-muted); }
+.tier.closed { opacity:0.92; }
+.tier .tagline {
+  position:absolute; top:16px; right:16px;
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.14em;
+  text-transform:uppercase; padding:3px 8px; border-radius:3px;
+}
+.tier.hero .tagline { color:var(--violet-light); background:rgba(124,92,252,0.14); border:1px solid var(--violet-muted); }
+.tier .tagline.closed { color:var(--breach); background:rgba(255,60,80,0.08); border:1px solid rgba(255,60,80,0.2); }
+.tier .tagline.open { color:var(--signal); background:rgba(61,220,151,0.06); border:1px solid rgba(61,220,151,0.2); }
+.tier .name { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--t55); margin-bottom:14px; }
+.tier .title { font-family:'Syne',sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.02em; color:var(--t100); margin-bottom:6px; }
+.tier .title .vio { color:var(--violet); }
+.tier .sub { font-family:'Inter',sans-serif; font-size:13px; color:var(--t55); line-height:1.6; margin-bottom:22px; min-height:42px; }
+.tier .cap {
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--deep); border:1px solid var(--border-sm); border-radius:6px;
+  padding:10px 14px; margin-bottom:20px;
+}
+.tier .cap .cl { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--t35); letter-spacing:0.06em; }
+.tier .cap .cv { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--t100); letter-spacing:0.04em; }
+.tier .cap .cv .a { color:var(--violet-light); }
+.tier .cap .cv.warn { color:var(--breach); }
+.tier .capbar { height:3px; background:var(--deep); border-radius:2px; margin-top:-14px; margin-bottom:20px; overflow:hidden; }
+.tier .capbar i { display:block; height:100%; background: var(--violet); border-radius:2px; }
+.tier.closed .capbar i { background: var(--breach); }
+.tier ul { list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:24px; flex:1; }
+.tier ul li { font-family:'Inter',sans-serif; font-size:13px; color:var(--t70); line-height:1.55; display:flex; align-items:flex-start; gap:10px; }
+.tier ul li::before { content:'✓'; color:var(--signal); font-family:'JetBrains Mono',monospace; font-size:11px; margin-top:2px; flex-shrink:0; }
+.tier.closed ul li::before { content:'—'; color:var(--t35); }
+.tier-sealed {
+  background: var(--deep); border:1px solid var(--border-sm); border-radius:6px;
+  padding:12px 14px; margin-bottom:20px; display:flex; flex-direction:column; gap:8px;
+}
+.ts-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.ts-k { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.08em; color:var(--t35); }
+.ts-v { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.04em; color:var(--t70); }
+.tier .btn-primary { width:100%; }
+.tier .btn-tier-closed {
+  display:flex; align-items:center; justify-content:center;
+  background:transparent; color:var(--t35);
+  font-family:'Inter',sans-serif; font-weight:500; font-size:14px;
+  padding:13px; border-radius:6px; border:1px dashed var(--border-md);
+  cursor:not-allowed;
+}
+
+/* ════════════════════════════════
+   EXPOSURE CHECK (interactive soft demo)
+════════════════════════════════ */
+.sec-check { background:var(--deep); }
+.check-card {
+  background:var(--surface); border:1px solid var(--border-md); border-radius:10px;
+  padding:32px 32px 28px; margin-top:16px; position:relative;
+}
+.check-hd { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:26px; flex-wrap:wrap; }
+.check-hd h3 { font-family:'Syne',sans-serif; font-weight:800; font-size:24px; letter-spacing:-0.02em; }
+.check-hd .sub { font-family:'Inter',sans-serif; font-size:13px; color:var(--t55); margin-top:6px; max-width:460px; }
+.check-live { display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--signal); letter-spacing:0.1em; flex-shrink:0; }
+
+.check-form { display:grid; grid-template-columns:1.2fr 1fr auto; gap:10px; margin-bottom:24px; }
+.check-form input {
+  background:var(--deep); border:1px solid var(--border-md); border-radius:6px;
+  padding:13px 16px; color:var(--t100); font-family:'Inter',sans-serif; font-size:14px;
+  outline:none; transition:border-color 0.18s;
+}
+.check-form input::placeholder { color:var(--muted); }
+.check-form input:focus { border-color:var(--violet); }
+
+.check-result { min-height:140px; }
+.check-idle {
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  background:var(--deep); border:1px dashed var(--border-md); border-radius:6px;
+  padding:32px 24px; font-family:'JetBrains Mono',monospace; font-size:12px;
+  color:var(--t35); letter-spacing:0.04em;
+}
+.check-running {
+  display:none; flex-direction:column; gap:0;
+  background:var(--deep); border:1px solid var(--border-sm); border-radius:6px;
+  overflow:hidden;
+}
+.cr-row { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:14px; padding:10px 18px; font-family:'JetBrains Mono',monospace; font-size:11px; border-bottom:1px solid rgba(200,208,224,0.04); }
+.cr-row:last-child { border-bottom:none; }
+.cr-row .dom { color:var(--t70); }
+.cr-row .st { font-size:10px; letter-spacing:0.08em; padding:2px 7px; border-radius:3px; }
+.cr-row .st.scanning { color:var(--violet-light); background:rgba(124,92,252,0.1); border:1px solid rgba(124,92,252,0.22); }
+.cr-row .st.found { color:var(--breach); background:rgba(255,60,80,0.08); border:1px solid rgba(255,60,80,0.2); }
+.cr-row .st.clean { color:var(--smoke); background:rgba(139,154,180,0.06); border:1px solid rgba(139,154,180,0.16); }
+.cr-row .n { color:var(--t55); font-size:10px; }
+.check-done {
+  display:none; background:var(--deep); border:1px solid rgba(255,60,80,0.25); border-radius:6px;
+  padding:22px 24px; margin-top:14px;
+}
+.check-done .big { font-family:'Syne',sans-serif; font-weight:800; font-size:36px; color:var(--breach); letter-spacing:-0.03em; line-height:1; }
+.check-done .big .sub2 { font-family:'Inter',sans-serif; font-weight:400; font-size:14px; color:var(--t55); letter-spacing:0; margin-left:10px; }
+.check-done p { font-family:'Inter',sans-serif; font-size:14px; color:var(--t70); line-height:1.6; margin-top:12px; }
+.check-done .row { display:flex; gap:12px; margin-top:18px; flex-wrap:wrap; }
+.check-fine { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--t35); letter-spacing:0.06em; margin-top:14px; }
+
+/* ════════════════════════════════
+   FEATURES
+════════════════════════════════ */
+.sec-feat { background:var(--void); }
+.feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border-sm); border:1px solid var(--border-sm); border-radius:8px; overflow:hidden; }
+.fc { background:var(--void); padding:36px 30px; transition:background 0.2s; }
+.fc:hover { background:var(--deep); }
+.fc.wide { grid-column:span 2; background:var(--surface); }
+.fc.wide:hover { background:var(--raised); }
+.fc-lbl { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--violet); margin-bottom:16px; }
+.fc h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:18px; letter-spacing:-0.015em; color:var(--t100); margin-bottom:10px; }
+.fc p { font-family:'Inter',sans-serif; font-weight:400; font-size:13.5px; color:var(--t55); line-height:1.65; }
+
+/* ════════════════════════════════
+   TESTIMONIALS
+════════════════════════════════ */
+.sec-test { background:var(--deep); }
+.t-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.tc { background:var(--surface); border:1px solid var(--border-sm); border-radius:8px; padding:28px 26px; display:flex; flex-direction:column; transition:border-color 0.2s; }
+.tc:hover { border-color:var(--violet-muted); }
+.tc.wide { grid-column:span 2; background:var(--raised); border-color:var(--border); }
+.t-stars { font-size:11px; color:#F59E0B; letter-spacing:2px; margin-bottom:16px; }
+.t-q { font-family:'Inter',sans-serif; font-weight:300; font-size:14.5px; color:var(--t70); line-height:1.75; flex:1; margin-bottom:20px; }
+.tc.wide .t-q { font-size:16.5px; }
+.t-auth { display:flex; align-items:center; gap:12px; }
+.t-av { width:36px; height:36px; border-radius:50%; background:var(--violet-muted); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--violet-light); flex-shrink:0; }
+.t-nm { font-family:'Inter',sans-serif; font-weight:500; font-size:13px; color:var(--t100); }
+.t-mt { font-family:'Inter',sans-serif; font-size:11px; color:var(--t35); margin-top:1px; }
+.t-verified { display:flex; align-items:center; gap:5px; margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--signal); letter-spacing:0.08em; }
+.t-verified::before { content:'✓'; }
+
+/* ════════════════════════════════
+   WAITLIST / FINAL
+════════════════════════════════ */
+.sec-wl { background:var(--void); text-align:center; padding:140px 48px; }
+.wl-smoke { position:absolute; top:0; left:50%; transform:translateX(-50%); width:820px; height:460px; background:radial-gradient(ellipse at 50% 0%, rgba(124,92,252,0.2) 0%, rgba(59,31,168,0.1) 42%, transparent 70%); pointer-events:none; }
+.wl-in { position:relative; z-index:2; }
+.wl-bracket {
+  font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(80px,10vw,130px);
+  line-height:0.8; letter-spacing:-0.04em; margin-bottom:24px;
+  background: linear-gradient(180deg, var(--violet) 0%, var(--violet-deep) 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.wl-hl { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(32px,4.8vw,50px); letter-spacing:-0.035em; line-height:1.05; color:var(--t100); margin-bottom:18px; }
+.wl-sub { font-family:'Inter',sans-serif; font-weight:300; font-size:16px; color:var(--t70); line-height:1.7; max-width:500px; margin:0 auto 40px; }
+.wl-form { display:flex; gap:0; max-width:440px; margin:0 auto; }
+.wl-form input { flex:1; background:var(--deep); border:1px solid var(--border-md); border-right:none; border-radius:6px 0 0 6px; padding:14px 18px; color:var(--t100); font-family:'Inter',sans-serif; font-size:14px; outline:none; }
+.wl-form input::placeholder { color:var(--muted); }
+.wl-form input:focus { border-color:var(--violet); }
+.wl-form .btn-primary { border-radius:0 6px 6px 0; padding:14px 24px; }
+.wl-perks { display:flex; align-items:center; justify-content:center; gap:22px; flex-wrap:wrap; margin-top:20px; }
+.wl-perk { display:flex; align-items:center; gap:6px; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--t55); letter-spacing:0.04em; }
+.wl-perk .k { color:var(--signal); }
+.wl-ok { display:none; font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--signal); background:rgba(61,220,151,0.05); border:1px solid rgba(61,220,151,0.18); border-radius:6px; padding:18px 24px; max-width:440px; margin:0 auto; }
+.wl-ok .pos { color:#fff; font-weight:500; }
+
+.wl-manifesto {
+  margin-top:80px; padding-top:40px; border-top:1px solid var(--border-sm);
+  font-family:'Syne',sans-serif; font-weight:700; font-size:clamp(18px,2.2vw,24px);
+  letter-spacing:-0.02em; color:var(--t55); line-height:1.4;
+}
+.wl-manifesto .k { color:var(--violet-light); }
+
+/* ════════════════════════════════
+   FOOTER
+════════════════════════════════ */
+footer { background:var(--void); border-top:1px solid var(--border-sm); padding:48px 48px 32px; }
+.ft-in { max-width:1080px; margin:0 auto; display:flex; align-items:flex-start; justify-content:space-between; gap:40px; flex-wrap:wrap; }
+.ft-brand { max-width:280px; }
+.ft-brand .logo { margin-bottom:14px; }
+.ft-brand p { font-family:'Inter',sans-serif; font-size:12px; color:var(--t35); line-height:1.6; }
+.ft-cols { display:flex; gap:56px; flex-wrap:wrap; }
+.ft-col h5 { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--t35); margin-bottom:12px; font-weight:500; }
+.ft-col ul { list-style:none; display:flex; flex-direction:column; gap:9px; }
+.ft-col ul a { font-family:'Inter',sans-serif; font-size:13px; color:var(--t55); text-decoration:none; transition:color 0.15s; }
+.ft-col ul a:hover { color:var(--t100); }
+.ft-col ul a .tag { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--violet-light); background:rgba(124,92,252,0.1); border:1px solid rgba(124,92,252,0.2); padding:1px 5px; border-radius:3px; margin-left:6px; letter-spacing:0.08em; }
+.ft-bottom {
+  max-width:1080px; margin:36px auto 0; padding-top:20px; border-top:1px solid var(--border-sm);
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+}
+.ft-copy { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--t20); letter-spacing:0.04em; }
+.ft-copy .vio { color:var(--violet-muted); }
+.ft-status { display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--t35); letter-spacing:0.04em; }
+.ft-status .pulse.signal { width:6px; height:6px; }
+
+/* ════════════════════════════════
+   SCROLL REVEAL
+════════════════════════════════ */
+.rv { opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease; }
+.rv.in { opacity:1; transform:none; }
+
+/* ════════════════════════════════
+   RESPONSIVE
+════════════════════════════════ */
+@media (max-width: 960px) {
+  .prob-layout { grid-template-columns:1fr; gap:48px; }
+  .how-grid { grid-template-columns:1fr; }
+  .feat-grid { grid-template-columns:1fr; }
+  .fc.wide { grid-column:span 1; }
+  .t-grid { grid-template-columns:1fr; }
+  .tc.wide { grid-column:span 1; }
+  .tiers { grid-template-columns:1fr; }
+  .demand-in { grid-template-columns:repeat(2,1fr); }
+  .d-cell:nth-child(2) { border-right:none; }
+  .d-cell:nth-child(1), .d-cell:nth-child(2) { border-bottom:1px solid var(--border-sm); }
+  .preview-notes { grid-template-columns:1fr; gap:16px; }
+  .dash { grid-template-columns:1fr; }
+  .dash-side { display:none; }
+  .dash-score-row { grid-template-columns:1fr; }
+  .check-form { grid-template-columns:1fr; }
+}
+@media (max-width: 768px) {
+  nav { padding:0 20px; }
+  .nav-links { display:none; }
+  .hamburger { display:flex; }
+  .btn-ghost { display:none; }
+  .launchbar { font-size:10px; gap:10px; padding:0 12px; }
+  .launchbar .tag { display:none; }
+
+  .hero { padding:130px 24px 60px; }
+  .hero-hl { font-size:clamp(36px,10vw,60px); }
+  .hero-form { flex-direction:column; }
+  .hero-form input { border-right:1px solid var(--border-md); border-radius:6px; }
+  .hero-form .btn-primary { border-radius:6px; }
+  .hero-proof { flex-wrap:wrap; gap:18px; }
+  .pf-div { display:none; }
+
+  .sec, .sec-wl { padding:80px 24px; }
+  .press { padding:22px 24px; }
+  .press-in { justify-content:flex-start; }
+  .demand-in { padding:0 24px; }
+  .d-cell { padding:36px 20px; }
+  .d-cell .v { font-size:32px; }
+  .dl-row { grid-template-columns: 60px 1fr auto; }
+  .dl-row .ct { display:none; }
+  footer { padding:36px 24px 24px; }
+  .ft-in { flex-direction:column; gap:28px; }
+  .ft-cols { gap:36px; }
+  .wl-form { flex-direction:column; }
+  .wl-form input { border-right:1px solid var(--border-md); border-radius:6px; }
+  .wl-form .btn-primary { border-radius:6px; }
+}
+@media (max-width: 430px) {
+  .hero-hl { font-size:clamp(30px,10vw,50px); }
+  .wl-perks { gap:14px; }
+  .demand-in { grid-template-columns:1fr; }
+  .d-cell { border-right:none !important; border-bottom:1px solid var(--border-sm); }
+  .d-cell:last-child { border-bottom:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LAUNCH BAR — soft-launch signal ══ -->
+<div class="launchbar">
+  <span class="dot"></span>
+  <span class="tag">SOFT LAUNCH</span>
+  <span>Private beta open · <b id="lb-ctr">1,247</b> / 2,000 seats filled · <a href="#access">claim yours →</a></span>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="#" class="logo"><span class="vio">[UN]</span><span class="wrd">STALKER</span></a>
+  <ul class="nav-links">
+    <li><a href="#problem">The problem</a></li>
+    <li><a href="#preview">Product</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#access">Access</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#" class="btn-ghost">Log in</a>
+    <a href="#access" class="btn-primary">Get early access</a>
+  </div>
+  <button class="hamburger" aria-label="Menu">
+    <div class="ham-line"></div><div class="ham-line"></div><div class="ham-line"></div>
+  </button>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-smoke"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+
+    <div class="hero-pill">
+      <span class="pulse"></span>
+      <span class="tx">BETA IS LIVE · <span class="ctr" id="hero-ctr">5,528</span> PROTECTED · <span id="hero-records">127,440</span> RECORDS ERASED</span>
+    </div>
+
+    <h1 class="hero-hl">
+      Your data is <span class="accent">public.</span><br/>
+      <span class="vio">[UN]</span>STALKER makes it disappear.
+    </h1>
+
+    <p class="hero-body">
+      350+ data brokers sell your home address, phone, and family ties — <b>without your consent</b>.
+      Our AI agent erases you from every one of them. Automatically. Permanently. And re-erases you the moment they try again.
+    </p>
+
+    <div id="hero-cta">
+      <div class="hero-form">
+        <input type="email" id="hero-email" placeholder="name@domain.com" />
+        <button class="btn-primary" onclick="heroSubmit()">Run my free scan</button>
+      </div>
+      <p class="hero-fine">FREE FIRST SCAN<span class="sep">·</span>NO CARD<span class="sep">·</span>2 MIN SETUP</p>
+    </div>
+    <div class="hero-ok" id="hero-ok">
+      agent.queue(email) → confirmed ✓ · you're <span class="pos" id="hero-pos">#1,248</span> in line.
+    </div>
+
+    <div class="hero-proof">
+      <div class="pf-stat"><div class="v"><span class="cu" data-t="350">0</span><span class="a">+</span></div><div class="l">brokers covered</div></div>
+      <div class="pf-div"></div>
+      <div class="pf-stat"><div class="v"><span class="cu" data-t="127440">0</span></div><div class="l">records erased</div></div>
+      <div class="pf-div"></div>
+      <div class="pf-stat"><div class="v">&lt;48h</div><div class="l">avg removal time</div></div>
+      <div class="pf-div"></div>
+      <div class="pf-stat"><div class="v">24/7</div><div class="l">monitoring</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ PRESS / AS SEEN IN ══ -->
+<div class="press">
+  <div class="press-in">
+    <div class="press-lbl">As featured in</div>
+    <div class="press-logos">
+      <span class="pl serif">TechCrunch</span>
+      <span class="pl">WIRED</span>
+      <span class="pl serif">The Verge</span>
+      <span class="pl mono">HACKER NEWS</span>
+      <span class="pl serif">Fast Company</span>
+      <span class="pl mono">PRODUCT HUNT</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DEMAND / LIVE-PROOF ══ -->
+<div class="demand">
+  <div class="demand-in">
+    <div class="d-cell rv">
+      <div class="k">// waitlist.size</div>
+      <div class="v"><span class="cu" data-t="5528">0</span></div>
+      <div class="delta">+312 this week</div>
+    </div>
+    <div class="d-cell rv" style="transition-delay:0.08s">
+      <div class="k">// agent.removals</div>
+      <div class="v"><span class="cu" data-t="127440">0</span></div>
+      <div class="delta">+4,207 last 24h</div>
+    </div>
+    <div class="d-cell rv breach" style="transition-delay:0.16s">
+      <div class="k">// brokers.detected</div>
+      <div class="v"><span class="cu" data-t="352">0</span><span class="a">+</span></div>
+      <div class="delta">3 new this week</div>
+    </div>
+    <div class="d-cell rv" style="transition-delay:0.24s">
+      <div class="k">// agent.uptime</div>
+      <div class="v">99.94<span class="u">%</span></div>
+      <div class="delta">30-day rolling</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PROBLEM ══ -->
+<section class="sec sec-problem" id="problem">
+  <div class="sec-in">
+    <div class="prob-layout">
+      <div class="prob-copy rv">
+        <div class="eyebrow">The problem</div>
+        <h2>Your data is<br/>already out there.</h2>
+        <p>Hundreds of companies you've never heard of are buying and selling <b>your home address, phone, family ties, and search history</b> — without your consent.</p>
+        <p>Manual opt-out forms don't work. They re-add you within <b>30 days</b>. The cycle is designed to exhaust you into giving up.</p>
+        <p><b>We don't give up.</b></p>
+
+        <div class="prob-inline-stats">
+          <div class="prob-is">
+            <div class="n">$240B</div>
+            <div class="l">annual data broker market</div>
+          </div>
+          <div class="prob-is">
+            <div class="n">4,000+</div>
+            <div class="l">profiles per average person</div>
+          </div>
+        </div>
+      </div>
+      <div class="rv" style="transition-delay:0.12s">
+        <div class="terminal">
+          <div class="term-bar">
+            <div class="tb-d" style="background:#FF3C50;opacity:0.8"></div>
+            <div class="tb-d" style="background:#F59E0B;opacity:0.6;margin-left:4px"></div>
+            <div class="tb-d" style="background:var(--smoke);opacity:0.4;margin-left:4px"></div>
+            <span class="term-title">agent.scan() <span class="dim">— live</span></span>
+          </div>
+          <div class="term-body">
+            <div class="t-row"><span class="t-name">fastpeoplesearch.com</span><span class="t-found">FOUND</span><span class="t-ct">3 records</span></div>
+            <div class="t-row"><span class="t-name">spokeo.com</span><span class="t-found">FOUND</span><span class="t-ct">7 records</span></div>
+            <div class="t-row"><span class="t-name">beenverified.com</span><span class="t-rm"><div class="t-spin"></div>REMOVING</span><span class="t-ct">2 records</span></div>
+            <div class="t-row"><span class="t-name">whitepages.com</span><span class="t-done">REMOVED</span><span class="t-ct">5 records</span></div>
+            <div class="t-row"><span class="t-name">intelius.com</span><span class="t-rm"><div class="t-spin"></div>REMOVING</span><span class="t-ct">4 records</span></div>
+          </div>
+          <div class="term-foot">
+            <span class="tf-lbl">exposures.<span class="acc">active</span></span>
+            <span class="tf-num">21</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRODUCT PREVIEW — soft launch ══ -->
+<section class="sec sec-preview" id="preview">
+  <div class="sec-in">
+    <div class="sec-hd rv">
+      <div class="eyebrow">First look · beta build v0.8.2</div>
+      <h2>The agent runs.<br/>You watch it work.</h2>
+      <p>Every scan, every opt-out, every re-detection — visible in one interface. No black box. No vague reassurances. The product is shipping now to private beta. Here's what you get on day one.</p>
+    </div>
+
+    <div class="preview-wrap rv" style="transition-delay:0.12s">
+      <div class="preview-frame">
+        <div class="pf-chrome">
+          <div class="c-dots">
+            <div style="background:#FF3C50;opacity:0.75"></div>
+            <div style="background:#F59E0B;opacity:0.55"></div>
+            <div style="background:var(--smoke);opacity:0.4"></div>
+          </div>
+          <div class="c-url"><span class="lock">●</span>app.unstalker.io<span class="path">/dashboard</span></div>
+        </div>
+        <div class="dash">
+          <aside class="dash-side">
+            <div class="logo-mini"><span class="vio">[UN]</span>STALKER</div>
+            <div class="g-lbl">// control</div>
+            <div class="nav-g">
+              <div class="ni active">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Dashboard
+              </div>
+              <div class="ni">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+                Scanners
+              </div>
+              <div class="ni">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Threat map
+              </div>
+              <div class="ni">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>
+                Removals
+              </div>
+            </div>
+            <div class="g-lbl">// account</div>
+            <div class="nav-g">
+              <div class="ni">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                Settings
+              </div>
+              <div class="ni">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+                Identity
+              </div>
+            </div>
+          </aside>
+
+          <div class="dash-main">
+            <div class="dash-top">
+              <div>
+                <h3>Good morning, Marcus.</h3>
+                <div class="sub">Agent has been running 7h 42m · 4 removals filed overnight</div>
+              </div>
+              <div class="dash-status">
+                <span class="pulse signal"></span>
+                <span class="tx">AGENT ACTIVE</span>
+              </div>
+            </div>
+
+            <div class="dash-score-row">
+              <div class="score-card">
+                <div class="hd">// privacy.score</div>
+                <div class="val ok">87<span class="unit">/ 100</span></div>
+                <div class="bar"><i style="width:87%"></i></div>
+                <div class="meta">+24 pts this month · top 8% of users</div>
+              </div>
+              <div class="score-card">
+                <div class="hd">// exposures.active</div>
+                <div class="val warn">3</div>
+                <div class="meta">queued for removal · ETA &lt; 24h</div>
+              </div>
+              <div class="score-card">
+                <div class="hd">// records.erased</div>
+                <div class="val">47</div>
+                <div class="meta">across 31 brokers · 100% verified</div>
+              </div>
+            </div>
+
+            <div class="dash-log">
+              <div class="dash-log-hd">
+                <div class="t">agent.log <span class="acc">— real-time</span></div>
+                <div class="live"><span class="pulse signal"></span> STREAMING</div>
+              </div>
+              <div class="dash-log-body">
+                <div class="dl-row"><span class="ts">08:47:02</span><span class="msg"><span class="h">removed</span> · spokeo.com — 3 records</span><span class="tag ok">ok</span><span class="ct">verified 08:47:14</span></div>
+                <div class="dl-row"><span class="ts">08:46:33</span><span class="msg"><span class="h">scanning</span> · beenverified.com</span><span class="tag scan">run</span><span class="ct">step 2 / 5</span></div>
+                <div class="dl-row"><span class="ts">08:45:11</span><span class="msg"><span class="h">removed</span> · whitepages.com — 1 record</span><span class="tag ok">ok</span><span class="ct">verified 08:45:22</span></div>
+                <div class="dl-row"><span class="ts">08:43:47</span><span class="msg"><span class="h">re-detected</span> · mylife.com — opening opt-out</span><span class="tag warn">new</span><span class="ct">auto-queued</span></div>
+                <div class="dl-row"><span class="ts">08:42:08</span><span class="msg"><span class="h">removed</span> · radaris.com — 2 records</span><span class="tag ok">ok</span><span class="ct">verified 08:42:19</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-notes">
+        <div class="pn"><b>Real-time agent log</b>Every request, response, and verification — streamed live. Not a status page. The actual trail.</div>
+        <div class="pn"><b>Privacy score you can move</b>A single number that gets smaller as your exposure shrinks. Ranked, tracked, shareable.</div>
+        <div class="pn"><b>No black box</b>Every removal is independently verified. Re-detection triggers a new opt-out within the hour.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="sec sec-how" id="how">
+  <div class="sec-in">
+    <div class="sec-hd ctr rv">
+      <div class="eyebrow">How it works</div>
+      <h2>Three steps.<br/>Then it runs forever.</h2>
+    </div>
+    <div class="how-grid rv" style="transition-delay:0.1s">
+      <div class="how-step">
+        <div class="step-n">01 / SCAN</div>
+        <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#A68FFD" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg></div>
+        <h3>Map your exposure</h3>
+        <p>We crawl 350+ data broker sites and map every listing with your name, address, phone, or relatives — a full threat map in minutes.</p>
+      </div>
+      <div class="how-step">
+        <div class="step-n">02 / REMOVE</div>
+        <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#A68FFD" stroke-width="1.5" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></div>
+        <h3>File every opt-out</h3>
+        <p>The AI agent navigates each broker's opt-out flow — solving CAPTCHAs, handling verifications, filing every removal request in parallel.</p>
+      </div>
+      <div class="how-step">
+        <div class="step-n">03 / GUARD</div>
+        <div class="step-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#A68FFD" stroke-width="1.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Guard against re-listing</h3>
+        <p>Brokers re-add your data every 30–90 days. We watch continuously and fire new removals the moment you reappear.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ACCESS / SOFT LAUNCH TIERS ══ -->
+<section class="sec sec-access" id="access">
+  <div class="sec-in">
+    <div class="sec-hd ctr rv">
+      <div class="eyebrow">Soft launch · Apr 2026</div>
+      <h2>Private beta is live.<br/>Three tiers open right now.</h2>
+      <p>We're rolling out carefully — 2,000 beta seats, lifetime pricing, and direct line to the team. Once the seats fill, the door closes and pricing resets.</p>
+    </div>
+    <div class="tiers rv" style="transition-delay:0.1s">
+
+      <div class="tier closed">
+        <span class="tagline closed">Closed</span>
+        <div class="name">// tier.01</div>
+        <div class="title">Founder <span class="vio">—</span> 100</div>
+        <div class="sub">First 100 users. Direct Slack with the team. Named in the product.</div>
+        <div class="cap">
+          <span class="cl">SEATS</span>
+          <span class="cv warn">100 / 100 · closed</span>
+        </div>
+        <div class="capbar"><i style="width:100%"></i></div>
+        <ul>
+          <li>Lifetime access — never pay</li>
+          <li>Private Slack with founders</li>
+          <li>Named in our product credits</li>
+        </ul>
+        <div class="tier-sealed">
+          <div class="ts-row"><span class="ts-k">// closed</span><span class="ts-v">Apr 02, 2026 · 14:22 UTC</span></div>
+          <div class="ts-row"><span class="ts-k">// duration</span><span class="ts-v">filled in 9h 41m</span></div>
+        </div>
+        <div class="btn-tier-closed">Tier sealed</div>
+      </div>
+
+      <div class="tier hero">
+        <span class="tagline">Open · filling fast</span>
+        <div class="name">// tier.02</div>
+        <div class="title">Beta <span class="vio">—</span> 2,000</div>
+        <div class="sub">Full product access during beta. Locked-in lifetime pricing when we go GA.</div>
+        <div class="cap">
+          <span class="cl">SEATS</span>
+          <span class="cv"><span id="tier-beta-n" class="a">1,247</span> / 2,000 filled</span>
+        </div>
+        <div class="capbar"><i id="tier-beta-bar" style="width:62%"></i></div>
+        <ul>
+          <li>Full access to scans + removals</li>
+          <li>Locked-in $9/mo for life (vs $19 GA)</li>
+          <li>Priority support · 24h response</li>
+          <li>Shape the roadmap — direct feedback line</li>
+        </ul>
+        <a href="#wl-final" class="btn-primary">Claim a beta seat</a>
+      </div>
+
+      <div class="tier">
+        <span class="tagline open">Open</span>
+        <div class="name">// tier.03</div>
+        <div class="title">Waitlist</div>
+        <div class="sub">Join the queue. We'll invite you the moment beta seats expire and GA opens.</div>
+        <div class="cap">
+          <span class="cl">QUEUE</span>
+          <span class="cv"><span class="a">5,528</span> ahead · no cap</span>
+        </div>
+        <div class="capbar"><i style="width:40%; background:var(--smoke)"></i></div>
+        <ul>
+          <li>First scan free — no card required</li>
+          <li>Early access to GA pricing</li>
+          <li>Launch-day heads-up</li>
+          <li>Early roadmap & preview emails</li>
+        </ul>
+        <a href="#wl-final" class="btn-ghost" style="width:100%">Join the waitlist</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ LIVE EXPOSURE CHECK ══ -->
+<section class="sec sec-check">
+  <div class="sec-in">
+    <div class="sec-hd rv">
+      <div class="eyebrow">Free exposure check</div>
+      <h2>See what's out there.<br/>In 12 seconds. No card.</h2>
+      <p>A sample scan against the top 25 brokers. We won't store your details — this is a preview of what a full [UN]STALKER scan uncovers across the full 350+ network.</p>
+    </div>
+
+    <div class="check-card rv" style="transition-delay:0.1s">
+      <div class="check-hd">
+        <div>
+          <h3>agent.preview()</h3>
+          <div class="sub">Enter your details. The agent will query 8 top brokers live. Results stay on your device.</div>
+        </div>
+        <div class="check-live"><span class="pulse signal"></span> AGENT ONLINE</div>
+      </div>
+
+      <div class="check-form">
+        <input type="text" id="chk-name" placeholder="Full name" />
+        <input type="text" id="chk-loc" placeholder="City, state" />
+        <button class="btn-primary" onclick="runCheck()">Run scan</button>
+      </div>
+
+      <div class="check-result">
+        <div class="check-idle" id="chk-idle">
+          // awaiting input — type a name + location to scan 8 sample brokers
+        </div>
+        <div class="check-running" id="chk-running"></div>
+        <div class="check-done" id="chk-done">
+          <div class="big"><span id="chk-count">14</span><span class="sub2">records found across 6 brokers</span></div>
+          <p>This was only the first 8 of <b style="color:var(--t100)">350+ brokers</b> we track. A full scan typically uncovers 3–5× more. Claim a beta seat to run it — and have the agent auto-remove every record it finds.</p>
+          <div class="row">
+            <a href="#wl-final" class="btn-primary">Get the full scan</a>
+            <a href="#" onclick="resetCheck(); return false;" class="btn-ghost">Run another</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="check-fine">// note: preview scans are simulated against public signatures. No real records are stored or transmitted.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section class="sec sec-feat" id="features">
+  <div class="sec-in">
+    <div class="sec-hd rv">
+      <div class="eyebrow">Under the hood</div>
+      <h2>Privacy, fully automated.</h2>
+    </div>
+    <div class="feat-grid rv" style="transition-delay:0.1s">
+      <div class="fc wide">
+        <div class="fc-lbl">// core.engine</div>
+        <h3>Deterministic AI agent — not approximate</h3>
+        <p>Every opt-out adapter is purpose-built for each broker's exact flow. The agent runs headful browser sessions, navigates login walls, solves CAPTCHAs, and handles multi-step email verifications. Nothing slips through. Nothing is guessed.</p>
+      </div>
+      <div class="fc">
+        <div class="fc-lbl">// visibility</div>
+        <h3>Privacy score + threat map</h3>
+        <p>Real-time score showing your exposure level, which data types are at risk, and a full timeline of every removal filed.</p>
+      </div>
+      <div class="fc">
+        <div class="fc-lbl">// coverage</div>
+        <h3>350+ brokers · growing weekly</h3>
+        <p>From Spokeo to obscure regional people-search sites — new adapters shipped every week.</p>
+      </div>
+      <div class="fc">
+        <div class="fc-lbl">// alerts</div>
+        <h3>Instant re-listing alerts</h3>
+        <p>The moment your data reappears, we notify you and auto-file removal. No lag, no manual checking.</p>
+      </div>
+      <div class="fc">
+        <div class="fc-lbl">// trust</div>
+        <h3>Zero data resale — ever</h3>
+        <p>We use your information exclusively to file removals. We never sell, share, or retain more than the minimum required.</p>
+      </div>
+      <div class="fc">
+        <div class="fc-lbl">// interface</div>
+        <h3>Dashboard + agent logs</h3>
+        <p>Every broker, every status, live agent activity, and your privacy score — in one clear interface.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section class="sec sec-test" id="testimonials">
+  <div class="sec-in">
+    <div class="sec-hd rv">
+      <div class="eyebrow">From beta users</div>
+      <h2>You never consented to this.<br/>We're fixing it.</h2>
+    </div>
+    <div class="t-grid">
+      <div class="tc wide rv">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-q">"I used to spend hours manually submitting opt-out requests every few months — and they'd always come back anyway. [UN]STALKER wiped 47 listings in the first 24 hours. I've been off the grid ever since. This is the tool I didn't know I needed."</p>
+        <div class="t-auth">
+          <div class="t-av">MK</div>
+          <div><div class="t-nm">Marcus K.</div><div class="t-mt">Software Engineer · Austin, TX</div></div>
+          <div class="t-verified">BETA USER</div>
+        </div>
+      </div>
+      <div class="tc rv" style="transition-delay:0.1s">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-q">"My stalker ex found my new address within weeks of me moving. [UN]STALKER removed me from 30+ sites in 48 hours. I finally feel safe."</p>
+        <div class="t-auth">
+          <div class="t-av" style="background:rgba(124,92,252,0.2)">SR</div>
+          <div><div class="t-nm">Sarah R.</div><div class="t-mt">Nurse · Chicago, IL</div></div>
+          <div class="t-verified">VERIFIED</div>
+        </div>
+      </div>
+      <div class="tc rv">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-q">"As a public defender I receive death threats. Having my home address listed publicly was terrifying. 60+ entries removed and re-protected automatically."</p>
+        <div class="t-auth">
+          <div class="t-av" style="background:rgba(124,92,252,0.12)">JT</div>
+          <div><div class="t-nm">James T.</div><div class="t-mt">Public Defender · New York, NY</div></div>
+          <div class="t-verified">VERIFIED</div>
+        </div>
+      </div>
+      <div class="tc rv" style="transition-delay:0.1s">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-q">"I tested 4 data removal services. [UN]STALKER is the only one that actually re-removes when data comes back. Set it and forget it — for real."</p>
+        <div class="t-auth">
+          <div class="t-av" style="background:rgba(139,154,180,0.12)">DL</div>
+          <div><div class="t-nm">Diana L.</div><div class="t-mt">Freelance Journalist</div></div>
+          <div class="t-verified">VERIFIED</div>
+        </div>
+      </div>
+      <div class="tc rv" style="transition-delay:0.15s">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-q">"The agent logs show exactly what's happening in real time. Finally a privacy tool built by engineers who understand automation."</p>
+        <div class="t-auth">
+          <div class="t-av" style="background:rgba(59,31,168,0.35)">NK</div>
+          <div><div class="t-nm">Natalie K.</div><div class="t-mt">Security Researcher</div></div>
+          <div class="t-verified">VERIFIED</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WAITLIST / FINAL CTA ══ -->
+<section class="sec sec-wl" id="wl-final">
+  <div class="wl-smoke"></div>
+  <div class="sec-narrow wl-in">
+    <div class="rv">
+      <div class="wl-bracket">[UN]</div>
+      <h2 class="wl-hl">Take your life off the market.</h2>
+      <p class="wl-sub">Your first scan is free. Beta seats are filling. Lock in lifetime pricing before Tier 2 closes.</p>
+      <div id="wl-area">
+        <div class="wl-form">
+          <input type="email" id="wl-email" placeholder="name@domain.com" />
+          <button class="btn-primary" onclick="wlSubmit()">Claim my seat</button>
+        </div>
+        <div class="wl-perks">
+          <div class="wl-perk"><span class="k">✓</span> First scan free</div>
+          <div class="wl-perk"><span class="k">✓</span> No credit card</div>
+          <div class="wl-perk"><span class="k">✓</span> Lifetime $9/mo</div>
+          <div class="wl-perk"><span class="k">✓</span> Cancel anytime</div>
+        </div>
+      </div>
+      <div class="wl-ok" id="wl-ok">
+        agent.queue(email) → confirmed ✓ · you're <span class="pos" id="wl-pos">#1,248</span> of 2,000 beta seats.
+      </div>
+
+      <div class="wl-manifesto">
+        <span class="k">[</span>Privacy is a right.<span class="k">]</span> We're here to enforce it.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="ft-in">
+    <div class="ft-brand">
+      <a href="#" class="logo"><span class="vio">[UN]</span><span class="wrd">STALKER</span></a>
+      <p>Silent AI agent for data broker removal. Built by engineers who believe privacy isn't a feature — it's a right.</p>
+    </div>
+    <div class="ft-cols">
+      <div class="ft-col">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="#preview">Dashboard <span class="tag">BETA</span></a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#access">Beta access</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Manifesto</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Privacy policy</a></li>
+          <li><a href="#">Terms of service</a></li>
+          <li><a href="#">Security</a></li>
+          <li><a href="#">Responsible disclosure</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <div class="ft-copy">© 2026 <span class="vio">[UN]</span>STALKER · agent.build v0.8.2</div>
+    <div class="ft-status"><span class="pulse signal"></span> All systems operational · uptime 99.94%</div>
+  </div>
+</footer>
+
+<script>
+  /* Scroll reveal */
+  const ro = new IntersectionObserver(
+    es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } }),
+    { threshold: 0.1 }
+  );
+  document.querySelectorAll('.rv').forEach(el => ro.observe(el));
+
+  /* Count-up */
+  function countUp(el, target, dur = 1500) {
+    const s = performance.now();
+    const tick = now => {
+      const p = Math.min((now - s) / dur, 1);
+      el.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target).toLocaleString();
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+  const co = new IntersectionObserver(
+    es => es.forEach(e => { if (e.isIntersecting) { countUp(e.target, +e.target.dataset.t); co.unobserve(e.target); } }),
+    { threshold: 0.4 }
+  );
+  document.querySelectorAll('.cu').forEach(el => co.observe(el));
+
+  /* Launchbar ticker — nudges seat count every ~12s to feel alive */
+  let lbCount = 1247;
+  const lbEl = document.getElementById('lb-ctr');
+  setInterval(() => {
+    if (Math.random() > 0.35 && lbCount < 1290) {
+      lbCount += 1;
+      lbEl.textContent = lbCount.toLocaleString();
+      const tierN = document.getElementById('tier-beta-n');
+      const tierBar = document.getElementById('tier-beta-bar');
+      if (tierN) tierN.textContent = lbCount.toLocaleString();
+      if (tierBar) tierBar.style.width = ((lbCount/2000)*100).toFixed(1) + '%';
+    }
+  }, 12000);
+
+  /* Hero records ticker */
+  let recCount = 127440;
+  const recEl = document.getElementById('hero-records');
+  setInterval(() => {
+    recCount += Math.floor(Math.random() * 4) + 1;
+    if (recEl) recEl.textContent = recCount.toLocaleString();
+  }, 4500);
+
+  /* Forms */
+  function heroSubmit() {
+    const v = document.getElementById('hero-email').value.trim();
+    if (!v || !v.includes('@')) return;
+    document.getElementById('hero-cta').style.display = 'none';
+    document.getElementById('hero-ok').style.display = 'block';
+    document.getElementById('hero-pos').textContent = '#' + (lbCount + 1).toLocaleString();
+  }
+  function wlSubmit() {
+    const v = document.getElementById('wl-email').value.trim();
+    if (!v || !v.includes('@')) return;
+    document.getElementById('wl-area').style.display = 'none';
+    document.getElementById('wl-ok').style.display = 'block';
+    document.getElementById('wl-pos').textContent = '#' + (lbCount + 1).toLocaleString();
+  }
+
+  /* Exposure preview scan — simulated */
+  const sampleBrokers = [
+    { d: 'fastpeoplesearch.com', found: 3 },
+    { d: 'spokeo.com', found: 4 },
+    { d: 'whitepages.com', found: 0 },
+    { d: 'beenverified.com', found: 2 },
+    { d: 'radaris.com', found: 1 },
+    { d: 'mylife.com', found: 2 },
+    { d: 'intelius.com', found: 0 },
+    { d: 'peoplefinders.com', found: 2 },
+  ];
+  let chkTimer = null;
+
+  function resetCheck() {
+    document.getElementById('chk-idle').style.display = 'flex';
+    document.getElementById('chk-running').style.display = 'none';
+    document.getElementById('chk-running').innerHTML = '';
+    document.getElementById('chk-done').style.display = 'none';
+    if (chkTimer) clearInterval(chkTimer);
+  }
+
+  function runCheck() {
+    const nm = document.getElementById('chk-name').value.trim();
+    const loc = document.getElementById('chk-loc').value.trim();
+    if (!nm || !loc) return;
+
+    document.getElementById('chk-idle').style.display = 'none';
+    document.getElementById('chk-done').style.display = 'none';
+    const rn = document.getElementById('chk-running');
+    rn.style.display = 'flex';
+    rn.innerHTML = sampleBrokers.map(b => `
+      <div class="cr-row" data-d="${b.d}">
+        <span class="dom">${b.d}</span>
+        <span></span>
+        <span class="st scanning">SCANNING</span>
+        <span class="n">—</span>
+      </div>
+    `).join('');
+
+    let i = 0;
+    if (chkTimer) clearInterval(chkTimer);
+    chkTimer = setInterval(() => {
+      if (i >= sampleBrokers.length) {
+        clearInterval(chkTimer);
+        const total = sampleBrokers.reduce((s,b) => s + b.found, 0);
+        document.getElementById('chk-count').textContent = total;
+        setTimeout(() => {
+          document.getElementById('chk-done').style.display = 'block';
+        }, 400);
+        return;
+      }
+      const row = rn.querySelectorAll('.cr-row')[i];
+      const b = sampleBrokers[i];
+      const stEl = row.querySelector('.st');
+      const nEl = row.querySelector('.n');
+      if (b.found > 0) {
+        stEl.className = 'st found';
+        stEl.textContent = 'FOUND';
+        nEl.textContent = b.found + ' records';
+      } else {
+        stEl.className = 'st clean';
+        stEl.textContent = 'CLEAN';
+        nEl.textContent = '0 records';
+      }
+      i++;
+    }, 650);
+  }
+</script>
+</body>
+</html>
