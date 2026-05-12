@@ -23,7 +23,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "[UN]STALKER — Privacy is a right. We're here to enforce it.",
   description:
-    "Your personal data is being bought and sold by 350+ data brokers. Unstalker is the silent AI agent that erases you from their records, automatically, permanently.",
+    "Your personal data is being bought and sold by data brokers you've never heard of. Unstalker is the silent AI agent that erases you from their records, automatically, permanently.",
   openGraph: {
     title: "[UN]STALKER",
     description: "The internet remembers. We make it forget.",

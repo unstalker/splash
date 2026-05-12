@@ -5,9 +5,8 @@ export const NAV_LINKS = [
 ];
 
 export const STATS = [
-  { display: "350+", label: "data brokers covered" },
   { display: "5,528", label: "people on waitlist" },
-  { display: "Q2 '26", label: "public beta opening", accent: true },
+  { display: "Q4 '26", label: "public beta opening", accent: true },
   { display: "24/7", label: "continuous monitoring" },
 ];
 
@@ -36,7 +35,7 @@ export const HOW_IT_WORKS = [
     label: "SCAN",
     title: "Scan & identify",
     description:
-      "We crawl 350+ data broker sites and map every listing with your name, address, phone, or relatives, a full threat map in minutes.",
+      "We crawl data broker sites and map every listing with your name, address, phone, or relatives — a full threat map in minutes.",
   },
   {
     step: "02",
@@ -69,7 +68,7 @@ export const FEATURES = [
   },
   {
     label: "COVERAGE",
-    title: "350+ brokers and growing",
+    title: "Brokers and growing",
     description:
       "From Spokeo to obscure regional people-search sites. New adapters shipped every week.",
   },

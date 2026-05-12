@@ -5,14 +5,8 @@ export default function Footer() {
     <footer style={{ borderTop: "1px solid var(--border-sm)" }}>
       {/* Top row: logo left, links right */}
       <div
-        style={{
-          maxWidth: 1100,
-          margin: "0 auto",
-          padding: "28px 40px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+        className="footer-row"
+        style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 40px" }}
       >
         <a
           href="#"
@@ -28,7 +22,7 @@ export default function Footer() {
           <span className="logo-stalker">STALKER</span>
         </a>
 
-        <div style={{ display: "flex", gap: 28, alignItems: "center" }}>
+        <div className="footer-links" style={{ display: "flex", gap: 28, alignItems: "center" }}>
           {[
             { label: "info@unstalker.ai", href: "mailto:info@unstalker.ai" },
             { label: "Privacy Policy", href: "#" },

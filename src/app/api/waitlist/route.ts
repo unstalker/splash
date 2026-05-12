@@ -1,6 +1,8 @@
 import { kv } from "@vercel/kv";
 import { NextRequest, NextResponse } from "next/server";
 
+const BASE_COUNT = 5528;
+
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const { name, email } = body as { name?: string; email?: string };
@@ -11,10 +13,10 @@ export async function POST(req: NextRequest) {
 
   const normalised = email.toLowerCase().trim();
 
-  // Dedup — if already on list, return success without double-writing
   const exists = await kv.sismember("waitlist:emails", normalised);
   if (exists) {
-    return NextResponse.json({ success: true, duplicate: true });
+    const real = await kv.scard("waitlist:emails");
+    return NextResponse.json({ success: true, duplicate: true, count: BASE_COUNT + real });
   }
 
   await kv.sadd("waitlist:emails", normalised);
@@ -24,5 +26,6 @@ export async function POST(req: NextRequest) {
     ts: new Date().toISOString(),
   });
 
-  return NextResponse.json({ success: true });
+  const real = await kv.scard("waitlist:emails");
+  return NextResponse.json({ success: true, count: BASE_COUNT + real });
 }

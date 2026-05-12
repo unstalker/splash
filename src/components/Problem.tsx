@@ -33,15 +33,12 @@ export default function Problem() {
   return (
     <section
       id="problem"
+      className="section-pad"
       style={{ maxWidth: 1100, margin: "0 auto", padding: "96px 40px" }}
     >
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 80,
-          alignItems: "center",
-        }}
+        className="grid-2col"
+        style={{ gap: 80, alignItems: "center" }}
       >
         {/* Left: copy */}
         <motion.div
@@ -162,6 +159,7 @@ export default function Problem() {
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2 }}
+                className="log-line"
                 style={{
                   display: "flex",
                   gap: 20,

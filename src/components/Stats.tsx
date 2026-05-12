@@ -2,17 +2,16 @@
 
 import { motion } from "framer-motion";
 import { STATS } from "@/lib/content";
+import { useWaitlistCount, formatCount } from "@/lib/useWaitlistCount";
 
 export default function Stats() {
+  const { count } = useWaitlistCount();
+
   return (
     <section style={{ width: "100%", borderBottom: "1px solid var(--border-sm)" }}>
       <div
-        style={{
-          maxWidth: 1100,
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-        }}
+        className="grid-3col"
+        style={{ maxWidth: 1100, margin: "0 auto" }}
       >
         {STATS.map((stat, i) => (
           <motion.div
@@ -21,13 +20,12 @@ export default function Stats() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: i * 0.07 }}
+            className="divider-cell"
             style={{
               padding: "40px 32px",
-              borderRight: i < STATS.length - 1 ? "1px solid var(--border-sm)" : "none",
               textAlign: "center",
             }}
           >
-            {/* Stat value — styled to match screenshot (accent + on "Q2 '26") */}
             <div
               style={{
                 fontFamily: "var(--font-display), system-ui, sans-serif",
@@ -39,16 +37,13 @@ export default function Stats() {
                 color: "var(--t100)",
               }}
             >
-              {stat.display === "Q2 '26" ? (
+              {stat.display === "Q4 '26" ? (
                 <>
-                  <span>Q2 </span>
+                  <span>Q4 </span>
                   <span style={{ color: "var(--violet)" }}>&apos;26</span>
                 </>
-              ) : stat.display === "350+" ? (
-                <>
-                  <span>350</span>
-                  <span style={{ color: "var(--violet)" }}>+</span>
-                </>
+              ) : stat.label === "people on waitlist" ? (
+                formatCount(count)
               ) : (
                 stat.display
               )}

@@ -45,6 +45,7 @@ export default function Features() {
   return (
     <section
       id="features"
+      className="section-pad"
       style={{ maxWidth: 1100, margin: "0 auto", padding: "96px 40px" }}
     >
       <motion.div
@@ -88,11 +89,8 @@ export default function Features() {
       </motion.div>
 
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: 12,
-        }}
+        className="grid-3col-features"
+        style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}
       >
         {FEATURES.map((feature, i) => (
           <motion.div

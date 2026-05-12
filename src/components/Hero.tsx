@@ -1,25 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
+import { useWaitlistCount, formatCount } from "@/lib/useWaitlistCount";
 
 export default function Hero() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { count } = useWaitlistCount();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setLoading(true);
-    await fetch("/api/waitlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email }),
-    }).catch(() => {});
-    setLoading(false);
-    setSubmitted(true);
+  const handleCTA = () => {
+    document.querySelector("#waitlist")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -31,8 +19,8 @@ export default function Hero() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        overflow: "hidden",
         paddingTop: 64,
+        overflow: "hidden",
       }}
     >
       {/* Centered top violet glow */}
@@ -59,7 +47,7 @@ export default function Hero() {
           zIndex: 1,
           width: "100%",
           maxWidth: 860,
-          padding: "0 32px",
+          padding: "0 clamp(16px, 4vw, 32px)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -100,7 +88,7 @@ export default function Hero() {
               letterSpacing: "0.06em",
             }}
           >
-            Waitlist open, 5,528 people on the list
+            Waitlist open — {formatCount(count)} people on the list
           </span>
         </motion.div>
 
@@ -112,7 +100,7 @@ export default function Hero() {
           style={{
             fontFamily: "var(--font-display), system-ui, sans-serif",
             fontWeight: 800,
-            fontSize: "clamp(60px, 11vw, 100px)",
+            fontSize: "clamp(28px, 8vw, 100px)",
             lineHeight: 1,
             letterSpacing: "-0.02em",
             margin: 0,
@@ -156,112 +144,51 @@ export default function Hero() {
             marginBottom: 36,
           }}
         >
-          Your personal data is being bought and sold by 350+ data brokers
+          Your personal data is being bought and sold by data brokers
           you&apos;ve never heard of. Unstalker is the silent AI agent that
           erases you from their records, automatically, permanently.
         </motion.p>
 
-        {/* Form */}
+        {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.28 }}
-          style={{ width: "100%", maxWidth: 420 }}
+          style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}
         >
-          {submitted ? (
-            <div
-              style={{
-                padding: "20px 24px",
-                background: "rgba(124,92,252,0.08)",
-                border: "1px solid rgba(124,92,252,0.22)",
-                borderRadius: "var(--r-lg)",
-                textAlign: "center",
-                marginBottom: 12,
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "var(--font-display), system-ui, sans-serif",
-                  fontWeight: 700,
-                  fontSize: 18,
-                  color: "var(--violet-light)",
-                  marginBottom: 6,
-                }}
-              >
-                You&apos;re on the list.
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-mono), monospace",
-                  fontSize: 11,
-                  color: "var(--muted)",
-                  letterSpacing: "0.06em",
-                }}
-              >
-                we&apos;ll reach out when beta opens
-              </div>
-            </div>
-          ) : (
-            <form
-              onSubmit={handleSubmit}
-              style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 12 }}
-            >
-              <input
-                className="input"
-                type="text"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <input
-                className="input"
-                type="email"
-                placeholder="Your email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <button
-                type="submit"
-                disabled={loading}
-                style={{
-                  marginTop: 2,
-                  padding: "14px",
-                  borderRadius: "var(--r-md)",
-                  background: loading
-                    ? "rgba(124,92,252,0.7)"
-                    : "linear-gradient(180deg, #8c6cfc 0%, #7c5cfc 50%, #6a4deb 100%)",
-                  border: "1px solid rgba(166,143,253,0.4)",
-                  color: "#fff",
-                  fontFamily: "var(--font-body), system-ui, sans-serif",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  cursor: loading ? "default" : "pointer",
-                  transition: "filter 0.15s",
-                  boxShadow: "0 0 24px rgba(124,92,252,0.3)",
-                }}
-                onMouseEnter={(e) => { if (!loading) (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.08)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.filter = "none"; }}
-              >
-                {loading ? "Adding..." : "Get Early Access"}
-              </button>
-            </form>
-          )}
-
-          {!submitted && (
-            <p
-              style={{
-                fontFamily: "var(--font-body), system-ui, sans-serif",
-                fontSize: 12,
-                color: "var(--muted)",
-                textAlign: "center",
-              }}
-            >
-              Free forever for your first scan. No card required.
-            </p>
-          )}
+          <button
+            onClick={handleCTA}
+            style={{
+              padding: "14px 36px",
+              borderRadius: "var(--r-md)",
+              background: "linear-gradient(180deg, #8c6cfc 0%, #7c5cfc 50%, #6a4deb 100%)",
+              border: "1px solid rgba(166,143,253,0.4)",
+              color: "#fff",
+              fontFamily: "var(--font-body), system-ui, sans-serif",
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              transition: "filter 0.15s",
+              boxShadow: "0 0 24px rgba(124,92,252,0.3)",
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.08)"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.filter = "none"; }}
+          >
+            Get Early Access
+          </button>
+          <p
+            style={{
+              fontFamily: "var(--font-body), system-ui, sans-serif",
+              fontSize: 12,
+              color: "var(--muted)",
+              textAlign: "center",
+              margin: 0,
+            }}
+          >
+            Free forever for your first scan. No card required.
+          </p>
         </motion.div>
       </div>
     </section>

@@ -106,7 +106,6 @@ export default function Nav() {
           style={{ display: "flex", gap: 8, alignItems: "center" }}
           className="hidden-mobile"
         >
-          <button className="btn-ghost">Log in</button>
           <button
             className="btn-primary"
             onClick={() => handleNavClick("#waitlist")}
@@ -199,9 +198,6 @@ export default function Nav() {
             </button>
           ))}
           <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 8 }}>
-            <button className="btn-ghost" style={{ justifyContent: "flex-start" }}>
-              Log in
-            </button>
             <button
               className="btn-primary"
               onClick={() => handleNavClick("#waitlist")}

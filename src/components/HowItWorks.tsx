@@ -29,6 +29,7 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
+      className="section-pad"
       style={{ maxWidth: 1100, margin: "0 auto", padding: "96px 40px" }}
     >
       <motion.div
@@ -84,9 +85,8 @@ export default function HowItWorks() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.55, delay: 0.1 }}
+        className="grid-3col"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
           border: "1px solid var(--border-sm)",
           borderRadius: "var(--r-lg)",
           overflow: "hidden",
@@ -96,10 +96,8 @@ export default function HowItWorks() {
         {HOW_IT_WORKS.map((step, i) => (
           <div
             key={step.step}
-            style={{
-              padding: "36px 32px",
-              borderRight: i < HOW_IT_WORKS.length - 1 ? "1px solid var(--border-sm)" : "none",
-            }}
+            className="divider-cell"
+            style={{ padding: "36px 32px" }}
           >
             {/* Step label */}
             <div
