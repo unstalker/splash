@@ -1,15 +1,38 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import posthog from "posthog-js";
 import { useWaitlistCount, formatCount } from "@/lib/useWaitlistCount";
 
 export default function Hero() {
-  const { count } = useWaitlistCount();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { count, setCount } = useWaitlistCount();
 
-  const handleCTA = () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setLoading(true);
     posthog.capture("hero_cta_clicked");
-    document.querySelector("#waitlist")?.scrollIntoView({ behavior: "smooth" });
+    const res = await fetch("/api/waitlist", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email }),
+    }).catch(() => null);
+
+    const data = await res?.json().catch(() => ({}));
+    setLoading(false);
+
+    if (typeof data?.count === "number") setCount(data.count);
+    posthog.capture("waitlist_signup", {
+      source: "hero",
+      duplicate: data?.duplicate ?? false,
+      position: data?.count,
+    });
+    setSubmitted(true);
   };
 
   return (
@@ -151,46 +174,144 @@ export default function Hero() {
           erases you from their records, automatically, permanently.
         </motion.p>
 
-        {/* CTA */}
+        {/* Form / success */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.28 }}
-          style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}
+          style={{ width: "100%", maxWidth: 420 }}
         >
-          <button
-            onClick={handleCTA}
-            style={{
-              padding: "14px 36px",
-              borderRadius: "var(--r-md)",
-              background: "linear-gradient(180deg, #8c6cfc 0%, #7c5cfc 50%, #6a4deb 100%)",
-              border: "1px solid rgba(166,143,253,0.4)",
-              color: "#fff",
-              fontFamily: "var(--font-body), system-ui, sans-serif",
-              fontSize: 12,
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              cursor: "pointer",
-              transition: "filter 0.15s",
-              boxShadow: "0 0 24px rgba(124,92,252,0.3)",
-            }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.08)"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.filter = "none"; }}
-          >
-            Get Early Access
-          </button>
-          <p
-            style={{
-              fontFamily: "var(--font-body), system-ui, sans-serif",
-              fontSize: 12,
-              color: "var(--muted)",
-              textAlign: "center",
-              margin: 0,
-            }}
-          >
-            Free forever for your first scan. No card required.
-          </p>
+          <AnimatePresence mode="wait">
+            {submitted ? (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.95, y: 8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+                style={{
+                  background: "rgba(124,92,252,0.1)",
+                  border: "1px solid rgba(124,92,252,0.35)",
+                  borderRadius: "var(--r-lg)",
+                  padding: "32px 24px",
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: "50%",
+                    background: "rgba(124,92,252,0.18)",
+                    border: "1px solid rgba(124,92,252,0.4)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 16px",
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="#a68ffd" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="4,11 9,16 18,6" />
+                  </svg>
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-display), system-ui, sans-serif",
+                    fontWeight: 600,
+                    fontSize: 22,
+                    color: "var(--t100)",
+                    marginBottom: 8,
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  {name ? `You're in, ${name.split(" ")[0]}.` : "You're on the list."}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-body), system-ui, sans-serif",
+                    fontWeight: 300,
+                    fontSize: 14,
+                    color: "var(--t55)",
+                    lineHeight: 1.6,
+                    marginBottom: 16,
+                  }}
+                >
+                  We&apos;ll reach out as soon as your spot opens.<br />
+                  Keep an eye on your inbox.
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono), monospace",
+                    fontSize: 11,
+                    color: "var(--violet-light)",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  #{formatCount(count)} on the list
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div key="form" initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <form
+                  onSubmit={handleSubmit}
+                  style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 12 }}
+                >
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <input
+                    className="input"
+                    type="email"
+                    placeholder="Your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    style={{
+                      marginTop: 2,
+                      padding: "14px",
+                      borderRadius: "var(--r-md)",
+                      background: loading
+                        ? "rgba(124,92,252,0.7)"
+                        : "linear-gradient(180deg, #8c6cfc 0%, #7c5cfc 50%, #6a4deb 100%)",
+                      border: "1px solid rgba(166,143,253,0.4)",
+                      color: "#fff",
+                      fontFamily: "var(--font-body), system-ui, sans-serif",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      cursor: loading ? "default" : "pointer",
+                      transition: "filter 0.15s",
+                      boxShadow: "0 0 24px rgba(124,92,252,0.3)",
+                    }}
+                    onMouseEnter={(e) => { if (!loading) (e.currentTarget as HTMLButtonElement).style.filter = "brightness(1.08)"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.filter = "none"; }}
+                  >
+                    {loading ? "Adding..." : "Get Early Access"}
+                  </button>
+                </form>
+                <p
+                  style={{
+                    fontFamily: "var(--font-body), system-ui, sans-serif",
+                    fontSize: 12,
+                    color: "var(--muted)",
+                    textAlign: "center",
+                    margin: 0,
+                  }}
+                >
+                  Free forever for your first scan. No card required.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>

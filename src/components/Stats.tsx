@@ -29,7 +29,7 @@ export default function Stats() {
             <div
               style={{
                 fontFamily: "var(--font-display), system-ui, sans-serif",
-                fontWeight: 800,
+                fontWeight: 600,
                 fontSize: "clamp(32px, 4.5vw, 56px)",
                 letterSpacing: "-0.02em",
                 lineHeight: 1,

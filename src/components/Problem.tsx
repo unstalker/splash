@@ -68,7 +68,7 @@ export default function Problem() {
           <h2
             style={{
               fontFamily: "var(--font-display), system-ui, sans-serif",
-              fontWeight: 800,
+              fontWeight: 600,
               fontSize: "clamp(32px, 4vw, 52px)",
               letterSpacing: "-0.02em",
               lineHeight: 1.1,

@@ -63,7 +63,6 @@ export default function Nav() {
           }}
         >
           <span className="logo-un">[UN]</span>
-          <span className="logo-stalker">STALKER</span>
         </a>
 
         {/* Desktop nav links */}

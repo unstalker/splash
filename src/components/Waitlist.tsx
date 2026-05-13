@@ -28,6 +28,7 @@ export default function Waitlist() {
     if (typeof data?.count === "number") setCount(data.count);
 
     posthog.capture("waitlist_signup", {
+      source: "waitlist",
       duplicate: data?.duplicate ?? false,
       position: data?.count,
     });
@@ -105,7 +106,7 @@ export default function Waitlist() {
         <h2
           style={{
             fontFamily: "var(--font-display), system-ui, sans-serif",
-            fontWeight: 800,
+            fontWeight: 600,
             fontSize: "clamp(36px, 6vw, 64px)",
             letterSpacing: "-0.025em",
             lineHeight: 1.05,
@@ -168,7 +169,7 @@ export default function Waitlist() {
               <div
                 style={{
                   fontFamily: "var(--font-display), system-ui, sans-serif",
-                  fontWeight: 800,
+                  fontWeight: 600,
                   fontSize: 26,
                   color: "var(--t100)",
                   marginBottom: 10,

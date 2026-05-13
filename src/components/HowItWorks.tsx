@@ -66,7 +66,7 @@ export default function HowItWorks() {
         <h2
           style={{
             fontFamily: "var(--font-display), system-ui, sans-serif",
-            fontWeight: 800,
+            fontWeight: 600,
             fontSize: "clamp(28px, 4.5vw, 52px)",
             letterSpacing: "-0.025em",
             lineHeight: 1.1,
