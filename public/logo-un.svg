@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 28" width="44" height="28" role="img" aria-label="[UN] logo">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@800&amp;display=swap');
+    </style>
+  </defs>
+  <text
+    x="0"
+    y="22"
+    font-family="'Syne', system-ui, sans-serif"
+    font-weight="800"
+    font-size="20"
+    letter-spacing="-0.6"
+    fill="#7c5cfc"
+  >[UN]</text>
+</svg>
